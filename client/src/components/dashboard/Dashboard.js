@@ -137,14 +137,21 @@ function DashboardContent() {
                         sx={{
                             display: "flex",
                             alignItems: "center",
-                            justifyContent: "flex-end",
                             px: [1],
                         }}
                     >
+                        <h3 style={{ textAlign: "left" }}>
+                            Welcome JIT Factory
+                        </h3>
                         <IconButton onClick={toggleDrawer}>
                             <ChevronLeftIcon />
                         </IconButton>
                     </Toolbar>
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
                     <img
                         src={process.env.PUBLIC_URL + "/images/React.png"}
                         alt={1}
