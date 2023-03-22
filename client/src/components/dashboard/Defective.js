@@ -27,8 +27,8 @@ function preventDefault(event) {
 export default function Orders() {
     return (
         <React.Fragment>
-            <Title>불량품</Title>
-            <Table size="small">
+            <h2>불량품 로그</h2>
+            <Table size="medium">
                 <TableHead>
                     <TableRow>
                         <TableCell>
@@ -58,7 +58,7 @@ export default function Orders() {
             </Table>
             <Link
                 color="primary"
-                href="#defective"
+                href="/defective"
                 onClick={preventDefault}
                 sx={{ mt: 3 }}
             >

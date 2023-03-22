@@ -1,0 +1,12 @@
+.box{
+    align-self: center;
+    width: 8vmax;
+    height: 8vmax; 
+    border-radius: 40%;
+    overflow: hidden;
+}
+.profile{
+    width: 100vh;
+    height: 100vh;
+    object-fit: cover;
+}

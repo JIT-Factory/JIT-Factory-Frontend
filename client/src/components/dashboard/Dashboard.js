@@ -17,10 +17,22 @@ import Link from "@mui/material/Link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import { mainListItems, secondaryListItems } from "./listItems";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import "./Dashboard.css";
+
+import {
+    homeListItems,
+    memberListItems,
+    salesListItems,
+    defectiveListItems,
+    logoutListItems,
+    productListItems,
+} from "./listItems";
+
 import Chart from "./Chart";
 import Deposits from "./Deposits";
-import Orders from "./Orders";
+import Defective from "./Defective";
 
 function Copyright(props) {
     return (
@@ -149,20 +161,71 @@ function DashboardContent() {
                     </Toolbar>
                     <br />
                     <br />
-                    <br />
-                    <br />
-                    <br />
-                    <img
-                        src={process.env.PUBLIC_URL + "/images/React.png"}
-                        alt={1}
-                        style={{ borderRadius: "30" }}
-                    ></img>
+                    {open ? (
+                        <div className="box">
+                            <img
+                                className="profile"
+                                src={
+                                    process.env.PUBLIC_URL + "/images/React.png"
+                                }
+                                alt={1}
+                            ></img>
+                        </div>
+                    ) : (
+                        void 0
+                    )}
                     <p>아무개</p>
                     <Divider />
                     <List component="nav">
-                        {mainListItems}
+                        {homeListItems}
                         <Divider sx={{ my: 1 }} />
-                        {secondaryListItems}
+                        {memberListItems}
+                        <Divider sx={{ my: 1 }} />
+                        {salesListItems}
+                        <Divider sx={{ my: 1 }} />
+                        {defectiveListItems}
+                        <Divider sx={{ my: 1 }} />
+                        {productListItems}
+                        <Divider sx={{ my: 1 }} />
+                    </List>
+                    <br />
+                    <br />
+                    <br />
+                    <List component="nav">
+                        <Stack
+                            spacing={3}
+                            direction="row"
+                            style={{
+                                justifyContent: "center",
+                                display: "flex",
+                            }}
+                        >
+                            <Button
+                                className="PositiveBtn"
+                                variant="contained"
+                                style={{ background: "#5A95EC" }}
+                            >
+                                RUN
+                            </Button>
+                            <Button
+                                className="NegativeBtn"
+                                variant="contained"
+                                style={{ background: "#F47979" }}
+                            >
+                                STOP
+                            </Button>
+                        </Stack>
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <Divider sx={{ my: 1 }} />
+                        {logoutListItems}
                     </List>
                 </Drawer>
 
@@ -181,7 +244,7 @@ function DashboardContent() {
                     <Toolbar />
                     <div
                         style={{
-                            width: "90%",
+                            width: "95%",
                             margin: "auto",
                             paddingTop: "1vmax",
                         }}
@@ -201,7 +264,7 @@ function DashboardContent() {
                                         p: 2,
                                         display: "flex",
                                         flexDirection: "column",
-                                        height: 240,
+                                        height: 400,
                                     }}
                                 >
                                     <Chart />
@@ -214,7 +277,7 @@ function DashboardContent() {
                                         p: 2,
                                         display: "flex",
                                         flexDirection: "column",
-                                        height: 240,
+                                        height: 400,
                                     }}
                                 >
                                     <Deposits />
@@ -227,9 +290,10 @@ function DashboardContent() {
                                         p: 2,
                                         display: "flex",
                                         flexDirection: "column",
+                                        height: 600,
                                     }}
                                 >
-                                    <Orders />
+                                    <Defective />
                                 </Paper>
                             </Grid>
                         </Grid>

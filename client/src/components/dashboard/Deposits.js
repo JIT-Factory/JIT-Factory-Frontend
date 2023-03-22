@@ -10,7 +10,7 @@ function preventDefault(event) {
 export default function Deposits() {
     return (
         <React.Fragment>
-            <Title>오늘의 매출</Title>
+            <h2>오늘의 매출</h2>
             <Typography component="p" variant="h4">
                 ₩ 1,000
             </Typography>
@@ -18,8 +18,8 @@ export default function Deposits() {
                 on 15 March, 2019
             </Typography>
             <div>
-                <Link color="primary" href="#" onClick={preventDefault}>
-                    View balance
+                <Link color="primary" href="/sales" onClick={preventDefault}>
+                    전체 매출보기
                 </Link>
             </div>
         </React.Fragment>
