@@ -1,4 +1,5 @@
 import * as React from "react";
+import "./Dashboard.css";
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import MuiDrawer from "@mui/material/Drawer";
@@ -17,12 +18,11 @@ import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
+import Link from "@mui/material/Link";
+
 import Chart from "./Chart";
 import Deposits from "./Deposits";
 import Defective from "./Defective";
-import Link from "@mui/material/Link";
-
-import "./Dashboard.css";
 
 import {
     homeListItems,
@@ -32,6 +32,7 @@ import {
     logoutListItems,
     productListItems,
 } from "./listItems";
+
 
 const drawerWidth = 240;
 
