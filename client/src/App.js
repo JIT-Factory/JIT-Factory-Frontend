@@ -1,11 +1,13 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
+
 import Dashboard from "./components/dashboard/Dashboard";
 import TestPage from "./components/test/TestPage";
+import LoginPage from "./components/auth/LoginPage";
+
 import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
-
 function App() {
     const [hello, setHello] = useState("");
     // useEffect(() => {
@@ -28,8 +30,8 @@ function App() {
             <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/test" element={<TestPage />} />
+                <Route path="/login" element={<LoginPage />} />
             </Routes>
-            <div>오애오애오앵 {hello} </div>
         </div>
     );
 }

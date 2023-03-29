@@ -7,7 +7,7 @@ function TestPage() {
     useEffect(() => {
         axios
             //.get("http://localhost:8080/ping")
-            .get("/api/pong")
+            .get("/api/ping")
             .then((response) => setHello(response.data))
             .catch((error) => console.log(error));
     }, []);
