@@ -1,0 +1,18 @@
+.back{
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+}
+.back::before{
+    content: "";
+    background-image: url("../../assets/images/factory.jpg");
+    background-attachment: fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
+    opacity: 0.2;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+}
