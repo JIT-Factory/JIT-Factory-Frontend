@@ -1,4 +1,12 @@
 import * as React from "react";
+import "./auth.css";
+
+import { useNavigate } from "react-router-dom";
+
+import { authSlice } from "../redux/authSlice";
+import { useDispatch } from "react-redux";
+import axios from "axios";
+
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -11,19 +19,42 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import "./auth.css";
 
 const theme = createTheme();
 
 export default function LoginPage() {
+    const { setToken } = authSlice.actions;
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        console.log({
+        const dataForLogin = {
             email: data.get("email"),
             password: data.get("password"),
-        });
+        };
+        const { email, password } = dataForLogin;
+        const postData = { email, password };
+
+        axios
+            .post("/api/auth/login", postData)
+            .then(function (response) {
+                dispatch(setToken(response.headers["authorization"]));
+                const authorizationHeader = response.headers["authorization"];
+                if (authorizationHeader) {
+                    localStorage.setItem("token", authorizationHeader);
+                } else {
+                    console.error("Authorization header not found in response");
+                }
+                console.log(response, "성공");
+                navigate("/");
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
     };
 
     return (

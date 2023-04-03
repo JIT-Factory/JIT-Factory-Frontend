@@ -4,15 +4,9 @@ import { Routes, Route } from "react-router-dom";
 import Dashboard from "./components/dashboard/Dashboard";
 import LoginPage from "./components/auth/LoginPage";
 import SignUpPage from "./components/auth/SignUpPage";
-function App() {
-    // const [hello, setHello] = useState("");
-    // useEffect(() => {
-    //     axios
-    //         .get("/api/ping")
-    //         .then((response) => setHello(response.data))
-    //         .catch((error) => console.log(error));
-    // }, []);
 
+
+function App() {
     return (
         <div className="App">
             <Routes>

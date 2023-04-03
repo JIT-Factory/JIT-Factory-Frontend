@@ -1,76 +1,56 @@
 import * as React from "react";
 import "./Dashboard.css";
+
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import MuiDrawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
-import MuiAppBar from "@mui/material/AppBar";
 import List from "@mui/material/List";
-import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
-import Badge from "@mui/material/Badge";
-import MenuIcon from "@mui/icons-material/Menu";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
-import Link from "@mui/material/Link";
 
 import Chart from "./Chart";
 import Deposits from "./Deposits";
 import Defective from "./Defective";
 
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
+import jwt_decode from "jwt-decode";
+import { useSelector, useDispatch } from "react-redux";
+import { setToken } from "../redux/authSlice";
+import LogoutListItems from "./listItems";
 import {
     homeListItems,
     memberListItems,
     salesListItems,
     defectiveListItems,
-    logoutListItems,
     productListItems,
 } from "./listItems";
 
-
 const drawerWidth = 240;
 
-function Copyright(props) {
-    return (
-        <Typography
-            variant="body2"
-            color="text.secondary"
-            align="center"
-            {...props}
-        >
-            {"Copyright © "}
-            <Link color="inherit" href="https://mui.com/">
-                Your Website
-            </Link>{" "}
-            {new Date().getFullYear()}
-            {"."}
-        </Typography>
-    );
-}
-
-const AppBar = styled(MuiAppBar, {
-    shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-    zIndex: theme.zIndex.drawer + 1,
-    transition: theme.transitions.create(["width", "margin"], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-    }),
-    ...(open && {
-        marginLeft: drawerWidth,
-        width: `calc(100% - ${drawerWidth}px)`,
-        transition: theme.transitions.create(["width", "margin"], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-    }),
-}));
+// function Copyright(props) {
+//     return (
+//         <Typography
+//             variant="body2"
+//             color="text.secondary"
+//             align="center"
+//             {...props}
+//         >
+//             {"Copyright © "}
+//             <Link color="inherit" href="https://mui.com/">
+//                 Your Website
+//             </Link>{" "}
+//             {new Date().getFullYear()}
+//             {"."}
+//         </Typography>
+//     );
+// }
 
 const Drawer = styled(MuiDrawer, {
     shouldForwardProp: (prop) => prop !== "open",
@@ -101,6 +81,23 @@ const Drawer = styled(MuiDrawer, {
 const mdTheme = createTheme();
 
 function DashboardPage() {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const [userName, setUserName] = React.useState("");
+
+    // const token = useSelector((state) => state.auth.token);
+
+    useEffect(() => {
+        const storedToken = localStorage.getItem("token");
+        if (storedToken) {
+            dispatch(setToken(storedToken));
+            const tokenData = jwt_decode(storedToken);
+            setUserName(tokenData.email.split("@")[0]);
+        } else {
+            navigate("/login");
+        }
+    }, [dispatch, navigate]);
+
     const [open, setOpen] = React.useState(true);
     const toggleDrawer = () => {
         setOpen(!open);
@@ -110,40 +107,7 @@ function DashboardPage() {
         <ThemeProvider theme={mdTheme}>
             <Box sx={{ display: "flex" }}>
                 <CssBaseline />
-                <AppBar position="absolute" open={open}>
-                    <Toolbar
-                        sx={{
-                            pr: "24px", // keep right padding when drawer closed
-                        }}
-                    >
-                        <IconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label="open drawer"
-                            onClick={toggleDrawer}
-                            sx={{
-                                marginRight: "36px",
-                                ...(open && { display: "none" }),
-                            }}
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <Typography
-                            component="h1"
-                            variant="h6"
-                            color="inherit"
-                            noWrap
-                            sx={{ flexGrow: 1 }}
-                        >
-                            Dashboard
-                        </Typography>
-                        <IconButton color="inherit">
-                            <Badge badgeContent={4} color="secondary">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
-                    </Toolbar>
-                </AppBar>
+
                 <Drawer variant="permanent" open={open}>
                     <Toolbar
                         sx={{
@@ -152,12 +116,7 @@ function DashboardPage() {
                             px: [1],
                         }}
                     >
-                        <h3 style={{ textAlign: "left" }}>
-                            Welcome JIT Factory
-                        </h3>
-                        <IconButton onClick={toggleDrawer}>
-                            <ChevronLeftIcon />
-                        </IconButton>
+                        <h3 style={{ margin: "auto" }}>Welcome JIT Factory</h3>
                     </Toolbar>
                     <br />
                     <br />
@@ -174,7 +133,7 @@ function DashboardPage() {
                     ) : (
                         void 0
                     )}
-                    <p>아무개</p>
+                    <p>{userName}</p>
                     <Divider />
                     <List component="nav">
                         {homeListItems}
@@ -222,11 +181,8 @@ function DashboardPage() {
                         <br />
                         <br />
                         <br />
-                        <br />
-                        <br />
-                        <br />
                         <Divider sx={{ my: 1 }} />
-                        {logoutListItems}
+                        <LogoutListItems />
                     </List>
                 </Drawer>
                 <Box
@@ -241,7 +197,6 @@ function DashboardPage() {
                         overflow: "auto",
                     }}
                 >
-                    <Toolbar />
                     <div
                         style={{
                             width: "95%",
@@ -297,7 +252,7 @@ function DashboardPage() {
                                 </Paper>
                             </Grid>
                         </Grid>
-                        <Copyright sx={{ pt: 4 }} />
+                        {/* <Copyright sx={{ pt: 4 }} /> */}
                     </div>
                 </Box>
             </Box>

@@ -11,6 +11,12 @@ import ErrorIcon from "@mui/icons-material/Error";
 import LogoutIcon from "@mui/icons-material/Logout";
 import InventoryIcon from "@mui/icons-material/Inventory";
 
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setToken } from "../redux/authSlice";
+
+import axios from "axios";
+
 export const homeListItems = (
     <React.Fragment>
         <ListItemButton>
@@ -107,9 +113,28 @@ export const defectiveListItems = (
     </React.Fragment>
 );
 
-export const logoutListItems = (
-    <React.Fragment>
-        <ListItemButton>
+export default function LogoutListItems() {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        axios
+            .post("/api/auth/logout", null, {
+                headers: { Authorization: `${localStorage.getItem("token")}` },
+            })
+            .then(function (response) {
+                dispatch(setToken(""));
+                console.log(response, "로그아웃 성공");
+                localStorage.removeItem("token");
+                navigate("/login");
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+    };
+
+    return (
+        <ListItemButton onClick={handleLogout}>
             <ListItemIcon>
                 <LogoutIcon sx={{ color: "#000" }} fontSize="large" />
             </ListItemIcon>
@@ -128,8 +153,8 @@ export const logoutListItems = (
                 }
             />
         </ListItemButton>
-    </React.Fragment>
-);
+    );
+}
 
 export const productListItems = (
     <React.Fragment>

@@ -40,10 +40,10 @@ const SignUpPage = () => {
     const onhandlePost = async (data) => {
         const { email, name, password } = data;
         const postData = { email, name, password };
-
+        console.log(postData);
         // post
         await axios
-            .post("/member/join", postData)
+            .post("/api/auth/signup", postData)
             .then(function (response) {
                 console.log(response, "성공");
                 navigate("/login");
@@ -186,7 +186,7 @@ const SignUpPage = () => {
                                 sx={{ mt: 3, mb: 2 }}
                                 size="large"
                             >
-                                회원가입
+                                계정 생성
                             </Button>
                         </FormControl>
                         <FormHelperTexts>{registerError}</FormHelperTexts>
