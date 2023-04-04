@@ -53,6 +53,7 @@ export default function LoginPage() {
                 navigate("/");
             })
             .catch(function (err) {
+                alert("로그인할 수 없습니다. 계정을 확인해주세요!");
                 console.log(err);
             });
     };
