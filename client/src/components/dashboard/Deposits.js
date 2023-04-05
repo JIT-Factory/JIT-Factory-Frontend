@@ -17,6 +17,9 @@ function SalesSection({ title, salesSum, salesDate }) {
         <div>
             <Fragment>
                 <h2>{title}</h2>
+                <br />
+                <br />
+                <br />
                 <Typography component="p" variant="h4">
                     {salesSum}원
                 </Typography>
@@ -25,7 +28,7 @@ function SalesSection({ title, salesSum, salesDate }) {
                     {salesDate}
                 </Typography>
                 <br />
-                <div>
+                <div style={{ verticalAlign: "bottom", paddingTop: "5vmax" }}>
                     <Link
                         color="primary"
                         href="/sales"
@@ -96,12 +99,18 @@ function MonthlySales() {
     );
 }
 
-export default function Deposits() {
+export default function Deposits(props) {
     return (
         <div>
-            <DailySales />
-            <WeeklySales />
-            <MonthlySales />
+            {props.byDate == "Daily" ? (
+                <DailySales />
+            ) : props.byDate == "Weekly" ? (
+                <WeeklySales />
+            ) : (
+                <MonthlySales />
+            )}
+            {/* <WeeklySales />
+            <MonthlySales /> */}
         </div>
     );
 }

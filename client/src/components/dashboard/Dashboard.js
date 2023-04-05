@@ -12,6 +12,11 @@ import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
 
 import Chart from "./Chart";
 import Deposits from "./Deposits";
@@ -84,7 +89,7 @@ function DashboardPage() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [userName, setUserName] = React.useState("");
-
+    const [byDate, setByDate] = React.useState("Daily");
     // const token = useSelector((state) => state.auth.token);
 
     useEffect(() => {
@@ -101,6 +106,11 @@ function DashboardPage() {
     const [open, setOpen] = React.useState(true);
     const toggleDrawer = () => {
         setOpen(!open);
+    };
+
+    const handleChange = (event) => {
+        setByDate(event.target.value);
+        console.log(byDate);
     };
 
     return (
@@ -176,11 +186,6 @@ function DashboardPage() {
                         </Stack>
                         <br />
                         <br />
-                        <br />
-                        <br />
-                        <br />
-                        <br />
-                        <br />
                         <Divider sx={{ my: 1 }} />
                         <LogoutListItems />
                     </List>
@@ -214,6 +219,29 @@ function DashboardPage() {
                         >
                             {/* Chart */}
                             <Grid item xs={12} md={8} lg={9}>
+                                <RadioGroup
+                                    aria-labelledby="demo-controlled-radio-buttons-group"
+                                    name="controlled-radio-buttons-group"
+                                    value={byDate}
+                                    onChange={handleChange}
+                                    row
+                                >
+                                    <FormControlLabel
+                                        value="Daily"
+                                        control={<Radio />}
+                                        label="Daily"
+                                    />
+                                    <FormControlLabel
+                                        value="Weekly"
+                                        control={<Radio />}
+                                        label="Weekly"
+                                    />
+                                    <FormControlLabel
+                                        value="Monthly"
+                                        control={<Radio />}
+                                        label="Monthly"
+                                    />
+                                </RadioGroup>
                                 <Paper
                                     sx={{
                                         p: 2,
@@ -227,6 +255,10 @@ function DashboardPage() {
                             </Grid>
                             {/* Recent Deposits */}
                             <Grid item xs={12} md={4} lg={3}>
+                                <FormControlLabel
+                                    control={<Radio />}
+                                    style={{ visibility: "hidden" }}
+                                />
                                 <Paper
                                     sx={{
                                         p: 2,
@@ -235,7 +267,7 @@ function DashboardPage() {
                                         height: 400,
                                     }}
                                 >
-                                    <Deposits />
+                                    <Deposits byDate={byDate} />
                                 </Paper>
                             </Grid>
                             {/* Recent Orders */}
