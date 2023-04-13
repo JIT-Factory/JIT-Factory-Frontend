@@ -41,9 +41,10 @@ export const homeListItems = (
     </React.Fragment>
 );
 
-export const memberListItems = (
-    <React.Fragment>
-        <ListItemButton>
+export function MemberListItems() {
+    const navigate = useNavigate();
+    return (
+        <ListItemButton onClick={() => {navigate('/member')}}>
             <ListItemIcon>
                 <GroupsIcon sx={{ color: "#000" }} fontSize="large" />
             </ListItemIcon>
@@ -62,8 +63,8 @@ export const memberListItems = (
                 }
             />
         </ListItemButton>
-    </React.Fragment>
-);
+    )
+};
 
 export const salesListItems = (
     <React.Fragment>

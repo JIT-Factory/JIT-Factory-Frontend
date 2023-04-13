@@ -12,9 +12,9 @@ import Toolbar from "@mui/material/Toolbar";
 import { useEffect, useState } from "react";
 
 import LogoutListItems from "./dashboard/listItems";
+import { MemberListItems } from "./dashboard/listItems";
 import {
     homeListItems,
-    memberListItems,
     salesListItems,
     defectiveListItems,
     productListItems,
@@ -127,7 +127,7 @@ function HomeLayout() {
                 <List component="nav">
                     {homeListItems}
                     <Divider sx={{ my: 1 }} />
-                    {memberListItems}
+                    <MemberListItems />
                     <Divider sx={{ my: 1 }} />
                     {salesListItems}
                     <Divider sx={{ my: 1 }} />
