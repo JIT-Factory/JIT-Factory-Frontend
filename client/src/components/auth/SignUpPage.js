@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 import {
     Avatar,
     Button,
@@ -30,6 +32,8 @@ const Boxs = styled(Box)`
 
 const SignUpPage = () => {
     const theme = createTheme();
+    const [admin, setAdmin] = useState(false);
+    const [adminEnabled, setAdminEnabled] = useState(false);
     const [emailError, setEmailError] = useState("");
     const [passwordState, setPasswordState] = useState("");
     const [passwordError, setPasswordError] = useState("");
@@ -42,24 +46,40 @@ const SignUpPage = () => {
         const postData = { email, name, password };
         console.log(postData);
         // post
-        await axios
-            .post("/api/auth/signup", postData)
-            .then(function (response) {
-                console.log(response, "성공");
-                navigate("/login");
-            })
-            .catch(function (err) {
-                console.log(err);
-                setRegisterError(
-                    "회원가입에 실패하였습니다. 다시한번 확인해 주세요."
-                );
-            });
+        if (admin === false) {
+            await axios
+                .post("/api/auth/signup", postData)
+                .then(function (response) {
+                    console.log(response, "일반 계정 생성");
+                    navigate("/login");
+                })
+                .catch(function (err) {
+                    console.log(err);
+                    setRegisterError(
+                        "회원가입에 실패하였습니다. 다시한번 확인해 주세요."
+                    );
+                });
+        } else {
+            await axios
+                .post("/api/admin/signup", postData)
+                .then(function (response) {
+                    console.log(response, "관리자 계정 생성");
+                    navigate("/login");
+                })
+                .catch(function (err) {
+                    console.log(err);
+                    setRegisterError(
+                        "회원가입에 실패하였습니다. 다시한번 확인해 주세요."
+                    );
+                });
+        }
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
         const data = new FormData(e.currentTarget);
+        console.log(admin);
         const joinData = {
             email: data.get("email"),
             name: data.get("name"),
@@ -101,6 +121,19 @@ const SignUpPage = () => {
             onhandlePost(joinData);
         }
     };
+
+    function handleKeyDown(event) {
+        if (event.ctrlKey && event.altKey && event.key === "Enter") {
+            setAdminEnabled(true);
+        }
+    }
+
+    useEffect(() => {
+        document.addEventListener("keydown", handleKeyDown);
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, []);
 
     return (
         <ThemeProvider theme={theme}>
@@ -178,6 +211,25 @@ const SignUpPage = () => {
                                     />
                                 </Grid>
                                 <FormHelperTexts>{nameError}</FormHelperTexts>
+                                <Grid
+                                    item
+                                    xs={12}
+                                    style={{ textAlign: "left" }}
+                                >
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                value="allowExtraEmails"
+                                                color="primary"
+                                                disabled={!adminEnabled}
+                                                onChange={() => {
+                                                    setAdmin(!admin);
+                                                }}
+                                            />
+                                        }
+                                        label="ADMIN"
+                                    />
+                                </Grid>
                             </Grid>
                             <Button
                                 type="submit"
