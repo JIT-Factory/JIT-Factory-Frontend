@@ -17,11 +17,16 @@ import { setToken } from "../redux/authSlice";
 
 import axios from "axios";
 
-export const homeListItems = (
-    <React.Fragment>
-        <ListItemButton>
+export function HomeListItems() {
+    const navigate = useNavigate();
+    return (
+        <ListItemButton
+            onClick={() => {
+                navigate("/");
+            }}
+        >
             <ListItemIcon>
-                <HomeIcon sx={{ color: "#000" }} fontSize="large" />
+                <GroupsIcon sx={{ color: "#000" }} fontSize="large" />
             </ListItemIcon>
             <ListItemText
                 disableTypography
@@ -38,13 +43,17 @@ export const homeListItems = (
                 }
             />
         </ListItemButton>
-    </React.Fragment>
-);
+    );
+}
 
 export function MemberListItems() {
     const navigate = useNavigate();
     return (
-        <ListItemButton onClick={() => {navigate('/member')}}>
+        <ListItemButton
+            onClick={() => {
+                navigate("/member");
+            }}
+        >
             <ListItemIcon>
                 <GroupsIcon sx={{ color: "#000" }} fontSize="large" />
             </ListItemIcon>
@@ -63,12 +72,17 @@ export function MemberListItems() {
                 }
             />
         </ListItemButton>
-    )
-};
+    );
+}
 
-export const salesListItems = (
-    <React.Fragment>
-        <ListItemButton>
+export function SalesListItems() {
+    const navigate = useNavigate();
+    return (
+        <ListItemButton
+            onClick={() => {
+                navigate("/sales");
+            }}
+        >
             <ListItemIcon>
                 <AttachMoneyIcon sx={{ color: "#000" }} fontSize="large" />
             </ListItemIcon>
@@ -87,12 +101,17 @@ export const salesListItems = (
                 }
             />
         </ListItemButton>
-    </React.Fragment>
-);
+    );
+}
 
-export const defectiveListItems = (
-    <React.Fragment>
-        <ListItemButton>
+export function DefectiveListItems() {
+    const navigate = useNavigate();
+    return (
+        <ListItemButton
+            onClick={() => {
+                navigate("/defective");
+            }}
+        >
             <ListItemIcon>
                 <ErrorIcon sx={{ color: "#000" }} fontSize="large" />
             </ListItemIcon>
@@ -111,8 +130,9 @@ export const defectiveListItems = (
                 }
             />
         </ListItemButton>
-    </React.Fragment>
-);
+    );
+}
+    
 
 export default function LogoutListItems() {
     const dispatch = useDispatch();

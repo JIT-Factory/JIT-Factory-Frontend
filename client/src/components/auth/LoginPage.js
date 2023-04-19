@@ -42,8 +42,8 @@ export default function LoginPage() {
         axios
             .post("/api/auth/login", postData)
             .then(function (response) {
-                dispatch(setToken(response.headers["authorization"]));
                 const authorizationHeader = response.headers["authorization"];
+                dispatch(setToken(authorizationHeader));
                 if (authorizationHeader) {
                     localStorage.setItem("token", authorizationHeader);
                 } else {

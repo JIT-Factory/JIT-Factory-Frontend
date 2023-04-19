@@ -12,11 +12,11 @@ import Toolbar from "@mui/material/Toolbar";
 import { useEffect, useState } from "react";
 
 import LogoutListItems from "./dashboard/listItems";
-import { MemberListItems } from "./dashboard/listItems";
 import {
-    homeListItems,
-    salesListItems,
-    defectiveListItems,
+    HomeListItems,
+    MemberListItems,
+    SalesListItems,
+    DefectiveListItems,
     productListItems,
 } from "./dashboard/listItems";
 
@@ -78,6 +78,7 @@ function HomeLayout() {
     const dispatch = useDispatch();
     const [userName, setUserName] = useState("");
     const [open] = useState(true);
+    const [role, setRole] = useState("");
 
     useEffect(() => {
         const storedToken = localStorage.getItem("token");
@@ -85,10 +86,11 @@ function HomeLayout() {
             dispatch(setToken(storedToken));
             const tokenData = jwt_decode(storedToken);
             setUserName(tokenData.email.split("@")[0]);
+            setRole(tokenData.role.split("_")[1]);
         } else {
             navigate("/login");
         }
-    }, [dispatch, navigate]);
+    }, [dispatch, navigate, role]);
 
     return (
         <div>
@@ -125,13 +127,13 @@ function HomeLayout() {
                 <p>{userName}</p>
                 <Divider />
                 <List component="nav">
-                    {homeListItems}
+                    <HomeListItems />
                     <Divider sx={{ my: 1 }} />
-                    <MemberListItems />
+                    {role === "ADMIN" ? <MemberListItems /> : void 0}
+                    {role === "ADMIN" ? <Divider sx={{ my: 1 }} /> : void 0}
+                    <SalesListItems />
                     <Divider sx={{ my: 1 }} />
-                    {salesListItems}
-                    <Divider sx={{ my: 1 }} />
-                    {defectiveListItems}
+                    <DefectiveListItems />
                     <Divider sx={{ my: 1 }} />
                     {productListItems}
                     <Divider sx={{ my: 1 }} />

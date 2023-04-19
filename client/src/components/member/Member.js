@@ -6,7 +6,6 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import MemberDetail from "./MemberDetail";
-
 import HomeLayout from "../HomeLayout";
 
 const mdTheme = createTheme();

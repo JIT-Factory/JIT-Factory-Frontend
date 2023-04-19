@@ -1,28 +1,62 @@
 import * as React from "react";
+import { useEffect } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 // Generate Order Data
-function createData(id, role, name, userNumber, hiredate) {
-    return { id, role, name, userNumber, hiredate };
+function createData(id, role, name, userNumber, email) {
+    return { id, role, name, userNumber, email };
 }
-
-const rows = [
-    createData(0, "ADMIN", "아무개", "S1000", "2023.04.13"),
-    createData(1, "ADMIN", "홍길동", "S1101", "2023.04.13"),
-    createData(2, "GENERAL", "철수", "S1201", "2023.04.13"),
-    createData(3, "GENERAL", "영희", "S1202", "2023.04.13"),
-    createData(4, "GENERAL", "짱구", "S1203", "2023.04.13"),
-];
 
 function preventDefault(event) {
     event.preventDefault();
 }
 
+let rows = [];
 export default function MemberDetail() {
+    const navigate = useNavigate();
+    const token = useSelector((state) => state.auth.token);
+    useEffect(() => {
+        axios
+            .get("/api/admin/users", {
+                headers: {
+                    Authorization: `${token}`,
+                },
+            })
+            .catch((error) => {
+                console.error(error);
+                alert("관리자 전용 페이지입니다.");
+                navigate("/");
+            })
+            .then((response) => {
+                rows = response.data
+                    .map((user) =>
+                        createData(
+                            user.id,
+                            user.role,
+                            user.name,
+                            user.id,
+                            user.email
+                        )
+                    )
+                    .sort((a, b) => {
+                        if (a.role === "ADMIN" && b.role !== "ADMIN") {
+                            return -1;
+                        } else if (a.role !== "ADMIN" && b.role === "ADMIN") {
+                            return 1;
+                        } else {
+                            return 0;
+                        }
+                    });
+            });
+    }, []);
+
     return (
         <React.Fragment>
             <h2 style={{ paddingBottom: "1vmax" }}>JIT Factory 사원 현황</h2>
@@ -39,7 +73,7 @@ export default function MemberDetail() {
                             <h2>사원번호</h2>
                         </TableCell>
                         <TableCell>
-                            <h2>입사일</h2>
+                            <h2>이메일</h2>
                         </TableCell>
                     </TableRow>
                 </TableHead>
@@ -49,7 +83,7 @@ export default function MemberDetail() {
                             <TableCell>{row.role}</TableCell>
                             <TableCell>{row.name}</TableCell>
                             <TableCell>{row.userNumber}</TableCell>
-                            <TableCell>{row.hiredate}</TableCell>
+                            <TableCell>{row.email}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
