@@ -41,6 +41,8 @@ function DashboardPage() {
                         overflow: "auto",
                     }}
                 >
+                    <br />
+                    <br />
                     <div
                         className="content"
                         style={{

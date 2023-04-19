@@ -9,9 +9,9 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-// Generate Order Data
-function createData(id, role, name, userNumber, email) {
-    return { id, role, name, userNumber, email };
+// Generate user Data
+function createData(id, userNumber, role, name, email) {
+    return { id, userNumber, role, name, email };
 }
 
 function preventDefault(event) {
@@ -29,19 +29,14 @@ export default function MemberDetail() {
                     Authorization: `${token}`,
                 },
             })
-            .catch((error) => {
-                console.error(error);
-                alert("관리자 전용 페이지입니다.");
-                navigate("/");
-            })
             .then((response) => {
                 rows = response.data
                     .map((user) =>
                         createData(
                             user.id,
+                            user.id,
                             user.role,
                             user.name,
-                            user.id,
                             user.email
                         )
                     )
@@ -54,6 +49,9 @@ export default function MemberDetail() {
                             return 0;
                         }
                     });
+            })
+            .catch((error) => {
+                console.error(error);
             });
     }, []);
 
@@ -64,14 +62,15 @@ export default function MemberDetail() {
                 <TableHead>
                     <TableRow>
                         <TableCell>
+                            <h2>사원번호</h2>
+                        </TableCell>
+                        <TableCell>
                             <h2>직책</h2>
                         </TableCell>
                         <TableCell>
                             <h2>이름</h2>
                         </TableCell>
-                        <TableCell>
-                            <h2>사원번호</h2>
-                        </TableCell>
+
                         <TableCell>
                             <h2>이메일</h2>
                         </TableCell>
@@ -80,9 +79,9 @@ export default function MemberDetail() {
                 <TableBody>
                     {rows.map((row) => (
                         <TableRow key={row.id}>
+                            <TableCell>{row.userNumber}</TableCell>
                             <TableCell>{row.role}</TableCell>
                             <TableCell>{row.name}</TableCell>
-                            <TableCell>{row.userNumber}</TableCell>
                             <TableCell>{row.email}</TableCell>
                         </TableRow>
                     ))}

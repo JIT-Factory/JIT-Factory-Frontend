@@ -109,8 +109,6 @@ export default function Deposits(props) {
             ) : (
                 <MonthlySales />
             )}
-            {/* <WeeklySales />
-            <MonthlySales /> */}
         </div>
     );
 }

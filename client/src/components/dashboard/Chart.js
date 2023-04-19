@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useTheme } from "@mui/material/styles";
 import {
     LineChart,
@@ -16,6 +16,7 @@ import {
     fetchWeeklyProducts,
     fetchMonthlyProducts,
 } from "../redux/productsSlice";
+import axios from "axios";
 
 // Generate Sales Data
 function createData(time, amount) {
@@ -35,7 +36,8 @@ function createData(time, amount) {
 export default function Chart() {
     return (
         <>
-            <DailyChart />
+            {/* <DailyChart /> */}
+            <WeeklyChart />
         </>
     );
 }
@@ -54,7 +56,7 @@ function DailyChart() {
         console.log("create 됨");
     }, [dispatch]);
     let data = [createData(`${month + 1}.${day}`, productCount)];
-
+    console.log(data);
     // if (Array.isArray(productCount)) {
     //     data = productCount
     //         .slice(-7)
@@ -63,7 +65,7 @@ function DailyChart() {
 
     return (
         <React.Fragment>
-            <h2>일별 상품 배송량</h2>
+            <h2>일별 상품 판매량</h2>
             <ResponsiveContainer>
                 <LineChart
                     data={data}
@@ -92,7 +94,7 @@ function DailyChart() {
                                 ...theme.typography.body1,
                             }}
                         >
-                            Sales ($)
+                            SalesAmount (/EA)
                         </Label>
                     </YAxis>
                     <Line
@@ -109,32 +111,32 @@ function DailyChart() {
 }
 
 function WeeklyChart() {
+    // http://localhost:8080/api/sales/date/2023-04-20
+    //let apiUrl = `/api/sales/date/${today.toISOString().slice(0, 10)}`;
     const theme = useTheme();
-    const dispatch = useDispatch();
-    const { productCount } = useSelector((state) => state.products.weekly);
-
-    useEffect(() => {
-        dispatch(fetchWeeklyProducts());
-    }, [dispatch]);
-
-    if (!Array.isArray(productCount)) {
-        console.log(productCount);
-        return null; // productCount가 배열이 아니면 렌더링하지 않음
-    }
-
+    //let salesData = [createData(`${month + 1}.${day}`, productCount)];
     let data = [];
 
-    if (productCount) {
-        // 최근 7일의 데이터만 가져오기 위해 slice() 메소드를 사용함
-        const lastSevenDays = productCount.slice(-7);
-        data = lastSevenDays
-            .filter((count) => count !== null)
-            .map((count, index) => createData(`Day ${index + 1}`, count));
-    }
+    const [salesDates, setSalesDates] = useState([]);
+    const [salesCounts, setSalesCounts] = useState([]);
+
+    useEffect(() => {
+        axios.get("/api/sales/date").then((response) => {
+            const sortedData = response.data.sort((a, b) => {
+                return new Date(a.date) - new Date(b.date);
+            });
+            setSalesCounts(sortedData.map((item) => item.count));
+            setSalesDates(sortedData.map((item) => item.date));
+        });
+    }, []);
+
+    data = salesDates.map((date, index) => {
+        return createData(date, salesCounts[index]);
+    });
 
     return (
         <React.Fragment>
-            <h2>주간 상품 배송량</h2>
+            <h2>주간 상품 판매량</h2>
             <ResponsiveContainer>
                 <LineChart
                     data={data}
@@ -192,7 +194,7 @@ function YearlyChart() {
     }, [dispatch]);
     return (
         <React.Fragment>
-            <h2>연간 상품 배송량</h2>
+            <h2>연간 상품 판매량</h2>
             <ResponsiveContainer>
                 <LineChart
                     data={data}
