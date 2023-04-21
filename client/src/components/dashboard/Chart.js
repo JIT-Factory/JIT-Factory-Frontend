@@ -8,30 +8,14 @@ import {
     YAxis,
     Label,
     ResponsiveContainer,
+    Tooltip,
 } from "recharts";
-
-import { useDispatch, useSelector } from "react-redux";
-import {
-    fetchDailyProducts,
-    fetchWeeklyProducts,
-    fetchMonthlyProducts,
-} from "../redux/productsSlice";
 import axios from "axios";
 
 // Generate Sales Data
-function createData(time, amount) {
-    return { time, amount };
+function createData(date, count) {
+    return { time: date.slice(5, 10), amount: count };
 }
-
-// const data = [
-//     createData("월", 6),
-//     createData("화", 4),
-//     createData("수", 6),
-//     createData("목", 10),
-//     createData("금", 20),
-//     createData("토", 5),
-//     createData("일", 5),
-// ];
 
 export default function Chart() {
     return (
@@ -42,76 +26,7 @@ export default function Chart() {
     );
 }
 
-const now = new Date();
-const month = now.getMonth();
-const day = now.getDate();
-
-function DailyChart() {
-    const theme = useTheme();
-    const dispatch = useDispatch();
-    const { productCount } = useSelector((state) => state.products.daily);
-
-    useEffect(() => {
-        dispatch(fetchDailyProducts());
-        console.log("create 됨");
-    }, [dispatch]);
-    let data = [createData(`${month + 1}.${day}`, productCount)];
-    console.log(data);
-    // if (Array.isArray(productCount)) {
-    //     data = productCount
-    //         .slice(-7)
-    //         .map((count, index) => createData(`Day ${index + 1}`, count));
-    // }
-
-    return (
-        <React.Fragment>
-            <h2>일별 상품 판매량</h2>
-            <ResponsiveContainer>
-                <LineChart
-                    data={data}
-                    margin={{
-                        top: 16,
-                        right: 16,
-                        bottom: 0,
-                        left: 24,
-                    }}
-                >
-                    <XAxis
-                        dataKey="time"
-                        stroke={theme.palette.text.secondary}
-                        style={theme.typography.body2}
-                    />
-                    <YAxis
-                        stroke={theme.palette.text.secondary}
-                        style={theme.typography.body2}
-                    >
-                        <Label
-                            angle={270}
-                            position="left"
-                            style={{
-                                textAnchor: "middle",
-                                fill: theme.palette.text.primary,
-                                ...theme.typography.body1,
-                            }}
-                        >
-                            SalesAmount (/EA)
-                        </Label>
-                    </YAxis>
-                    <Line
-                        isAnimationActive={false}
-                        type="monotone"
-                        dataKey="amount"
-                        stroke={theme.palette.primary.main}
-                        dot={false}
-                    />
-                </LineChart>
-            </ResponsiveContainer>
-        </React.Fragment>
-    );
-}
-
-function WeeklyChart() {
-    // http://localhost:8080/api/sales/date/2023-04-20
+function AllTimeChart() {
     //let apiUrl = `/api/sales/date/${today.toISOString().slice(0, 10)}`;
     const theme = useTheme();
     //let salesData = [createData(`${month + 1}.${day}`, productCount)];
@@ -129,14 +44,14 @@ function WeeklyChart() {
             setSalesDates(sortedData.map((item) => item.date));
         });
     }, []);
-
+    console.log(salesDates, salesCounts);
     data = salesDates.map((date, index) => {
         return createData(date, salesCounts[index]);
     });
 
     return (
         <React.Fragment>
-            <h2>주간 상품 판매량</h2>
+            <h2>모든기간 상품 판매량</h2>
             <ResponsiveContainer>
                 <LineChart
                     data={data}
@@ -181,20 +96,57 @@ function WeeklyChart() {
     );
 }
 
-function YearlyChart() {
-    const theme = useTheme();
-    const dispatch = useDispatch();
-    const { productCount } = useSelector((state) => state.products.weekly);
+function getMissingDates(data, startDate, endDate) {
+    const missingDates = [];
+    const currentDate = new Date(startDate);
+    while (currentDate <= endDate) {
+        const currentDateStr = currentDate.toISOString().slice(0, 10);
+        if (!data.some((item) => item.date === currentDateStr)) {
+            missingDates.push({ date: currentDateStr, count: 0 });
+        }
+        currentDate.setDate(currentDate.getDate() + 1);
+    }
+    return missingDates;
+}
 
-    let data = [];
+function WeeklyChart() {
+    const theme = useTheme();
+    const [salesDates, setSalesDates] = useState([]);
+    const [salesCounts, setSalesCounts] = useState([]);
 
     useEffect(() => {
-        dispatch(fetchDailyProducts());
-        console.log(productCount);
-    }, [dispatch]);
+        const today = new Date();
+        const startDate = new Date(today);
+        startDate.setDate(startDate.getDate() - 6); // 최근 7일간의 날짜 범위 계산
+
+        axios.get("/api/sales/date").then((response) => {
+            const sortedData = response.data
+                .filter(
+                    (item) =>
+                        new Date(item.date) >= startDate &&
+                        new Date(item.date) <= today
+                ) // 최근 7일간의 데이터만 선택
+                .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            const missingDates = getMissingDates(sortedData, startDate, today);
+            const completeData = [...sortedData, ...missingDates].sort(
+                (a, b) => new Date(a.date) - new Date(b.date)
+            );
+
+            // 최근 7일간의 판매량 데이터와 날짜 데이터 분리하여 저장
+            setSalesCounts(completeData.map((item) => item.count));
+            setSalesDates(completeData.map((item) => item.date));
+        });
+    }, []);
+
+    // 최근 7일간의 판매량 데이터와 날짜 데이터를 이용하여 차트 데이터 생성
+    const data = salesDates.map((date, index) => {
+        return createData(date, salesCounts[index] || 0); // 최근 7일간의 데이터가 없다면 0으로 표시
+    });
+
     return (
         <React.Fragment>
-            <h2>연간 상품 판매량</h2>
+            <h2>최근 7일간 상품 판매량</h2>
             <ResponsiveContainer>
                 <LineChart
                     data={data}
@@ -233,10 +185,12 @@ function YearlyChart() {
                         stroke={theme.palette.primary.main}
                         dot={false}
                     />
+                    <Tooltip
+                        formatter={(value, name, props) => [value, "Sales"]}
+                        labelFormatter={(label) => label}
+                    />
                 </LineChart>
             </ResponsiveContainer>
         </React.Fragment>
     );
 }
-
-function MonthlyChart() {}
