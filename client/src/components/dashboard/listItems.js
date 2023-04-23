@@ -26,7 +26,7 @@ export function HomeListItems() {
             }}
         >
             <ListItemIcon>
-                <GroupsIcon sx={{ color: "#000" }} fontSize="large" />
+                <HomeIcon sx={{ color: "#000" }} fontSize="large" />
             </ListItemIcon>
             <ListItemText
                 disableTypography

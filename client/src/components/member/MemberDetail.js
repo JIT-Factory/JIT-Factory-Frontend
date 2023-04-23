@@ -1,27 +1,21 @@
 import * as React from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 
 // Generate user Data
 function createData(id, userNumber, role, name, email) {
     return { id, userNumber, role, name, email };
 }
 
-function preventDefault(event) {
-    event.preventDefault();
-}
-
-let rows = [];
 export default function MemberDetail() {
-    const navigate = useNavigate();
-    const token = useSelector((state) => state.auth.token);
+    const [rows, setRows] = useState([]);
+    const token = localStorage.getItem("token");
+
     useEffect(() => {
         axios
             .get("/api/admin/users", {
@@ -30,7 +24,7 @@ export default function MemberDetail() {
                 },
             })
             .then((response) => {
-                rows = response.data
+                const data = response.data
                     .map((user) =>
                         createData(
                             user.id,
@@ -49,11 +43,12 @@ export default function MemberDetail() {
                             return 0;
                         }
                     });
+                setRows(data);
             })
             .catch((error) => {
                 console.error(error);
             });
-    }, []);
+    }, [token]);
 
     return (
         <React.Fragment>
@@ -70,7 +65,6 @@ export default function MemberDetail() {
                         <TableCell>
                             <h2>이름</h2>
                         </TableCell>
-
                         <TableCell>
                             <h2>이메일</h2>
                         </TableCell>

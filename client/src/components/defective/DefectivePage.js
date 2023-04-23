@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import "../dashboard/Dashboard.css";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
-import MemberDetail from "./MemberDetail";
+import DefectiveDetail from "./DefectiveDetail"
 import HomeLayout from "../HomeLayout";
 
 const mdTheme = createTheme();
 
-function Member() {
+function DefectivePage() {
     return (
         <ThemeProvider theme={mdTheme}>
             <Box sx={{ display: "flex" }}>
@@ -54,7 +54,7 @@ function Member() {
                                         height: 550,
                                     }}
                                 >
-                                    <MemberDetail />
+                                    <DefectiveDetail />
                                 </Paper>
                             </Grid>
                         </Grid>
@@ -65,4 +65,4 @@ function Member() {
     );
 }
 
-export default Member;
+export default DefectivePage;

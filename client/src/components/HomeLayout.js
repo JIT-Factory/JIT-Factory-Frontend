@@ -83,7 +83,6 @@ function HomeLayout() {
     useEffect(() => {
         const storedToken = localStorage.getItem("token");
         if (storedToken) {
-            dispatch(setToken(storedToken));
             const tokenData = jwt_decode(storedToken);
             setUserName(tokenData.email.split("@")[0]);
             setRole(tokenData.role.split("_")[1]);
