@@ -89,9 +89,14 @@ function WeeklyChart() {
 
     useEffect(() => {
         const today = new Date();
+        today.setHours(23, 59, 59); // 시간 정보를 0시 0분 0초로 설정
         const startDate = new Date(today);
         startDate.setDate(startDate.getDate() - 6); // 최근 7일간의 날짜 범위 계산
+
         axios.get("/api/sales/date").then((response) => {
+            // 4월 25일 데이터가 들어있다.
+
+            // 여기서부터 문제 오늘날을 포함한 데이터가 안들어가있음
             const sortedData = response.data
                 .filter(
                     (item) =>
@@ -99,6 +104,8 @@ function WeeklyChart() {
                         new Date(item.date) <= today
                 ) // 최근 7일간의 데이터만 선택
                 .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            console.log(sortedData);
 
             const missingDates = getMissingDates(sortedData, startDate, today);
             const completeData = [...sortedData, ...missingDates].sort(
@@ -137,6 +144,7 @@ function MonthlyChart() {
 
     useEffect(() => {
         const today = new Date();
+        today.setHours(23, 59, 59); // 시간 정보를 0시 0분 0초로 설정
         const time = new Date(today);
         time.setDate(time.getDate() - 27); // 최근 28일간의 날짜 범위 계산
 
