@@ -8,10 +8,6 @@ import {
     fetchMonthlyProducts,
 } from "../redux/productsSlice";
 
-function preventDefault(event) {
-    event.preventDefault();
-}
-
 function SalesSection({ title, salesSum, salesDate }) {
     return (
         <div>
@@ -21,7 +17,7 @@ function SalesSection({ title, salesSum, salesDate }) {
                 <br />
                 <br />
                 <Typography component="p" variant="h4">
-                    {salesSum}원
+                    {salesSum || 0}원
                 </Typography>
                 <br />
                 <Typography color="text.secondary" sx={{ flex: 1 }}>
@@ -29,11 +25,7 @@ function SalesSection({ title, salesSum, salesDate }) {
                 </Typography>
                 <br />
                 <div style={{ verticalAlign: "bottom", paddingTop: "5vmax" }}>
-                    <Link
-                        color="primary"
-                        href="/sales"
-                        onClick={preventDefault}
-                    >
+                    <Link color="primary" href="/sales" onClick={() => {}}>
                         전체 매출보기
                     </Link>
                 </div>
@@ -54,7 +46,7 @@ function DailySales() {
 
     return (
         <SalesSection
-            title="일일 매출"
+            title="금일 매출"
             salesSum={salesSum}
             salesDate={salesDate}
         />
@@ -102,9 +94,9 @@ function MonthlySales() {
 export default function Deposits(props) {
     return (
         <div>
-            {props.byDate == "Daily" ? (
+            {props.byDate === "Daily" ? (
                 <DailySales />
-            ) : props.byDate == "Weekly" ? (
+            ) : props.byDate === "Weekly" ? (
                 <WeeklySales />
             ) : (
                 <MonthlySales />
