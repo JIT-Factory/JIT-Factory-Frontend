@@ -12,6 +12,11 @@ import {
 } from "recharts";
 import axios from "axios";
 
+// Generate Sales Data
+function createData(date, count) {
+    return { time: date.slice(5, 10), amount: count };
+}
+
 export default function Chart(props) {
     return (
         <>
@@ -78,45 +83,101 @@ function TimeChart(props) {
         </React.Fragment>
     );
 }
-// Generate Sales Data
-function createData(date, count) {
-    return { time: date.slice(5, 10), amount: count };
-}
 
-function WeeklyChart() {
-    const [salesDates, setSalesDates] = useState([]);
-    const [salesCounts, setSalesCounts] = useState([]);
+function useChartData(dateRange, storageKey, chartTitle) {
+    const [data, setData] = useState([]);
 
     useEffect(() => {
         const today = new Date();
         const startDate = new Date(today);
-        startDate.setDate(startDate.getDate() - 6); // 최근 7일간의 날짜 범위 계산
+        startDate.setDate(startDate.getDate() - dateRange); // 날짜 범위 계산
+
+        const cacheData = JSON.parse(localStorage.getItem(storageKey));
+        if (cacheData) {
+            setData(cacheData);
+            return;
+        }
+
         axios.get("/api/sales/date").then((response) => {
             const sortedData = response.data
                 .filter(
                     (item) =>
                         new Date(item.date) >= startDate &&
                         new Date(item.date) <= today
-                ) // 최근 7일간의 데이터만 선택
+                ) // 주어진 날짜 범위 내의 데이터만 선택
                 .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-            const missingDates = getMissingDates(sortedData, startDate, today);
-            const completeData = [...sortedData, ...missingDates].sort(
-                (a, b) => new Date(a.date) - new Date(b.date)
-            );
+            const salesData = [];
+            if (dateRange === 6) {
+                // 주간 차트의 경우, 누락된 날짜가 있는지 확인
+                const missingDates = getMissingDates(
+                    sortedData,
+                    startDate,
+                    today
+                );
+                const completeData = [...sortedData, ...missingDates].sort(
+                    (a, b) => new Date(a.date) - new Date(b.date)
+                );
+                salesData = completeData.map((item) => ({
+                    time: item.date,
+                    amount: item.count,
+                }));
+            } else if (dateRange === 27) {
+                // 월간 차트의 경우, 7일 단위로 그룹화하여 데이터 생성
+                let groupStartDate = new Date(startDate);
+                while (groupStartDate <= today) {
+                    const groupEndDate = new Date(groupStartDate);
+                    groupEndDate.setDate(groupEndDate.getDate() + 6); // 7일 후 날짜 계산
+                    const groupData = sortedData.filter(
+                        (item) =>
+                            new Date(item.date) >= groupStartDate &&
+                            new Date(item.date) <= groupEndDate
+                    ); // 그룹에 해당하는 데이터만 선택
+                    const salesCount = groupData.reduce(
+                        (sum, item) => sum + item.count,
+                        0
+                    );
+                    salesData.push({
+                        time: groupStartDate.toISOString().slice(0, 10),
+                        endDate: groupEndDate.toISOString().slice(0, 10),
+                        amount: salesCount,
+                    });
+                    groupStartDate.setDate(groupStartDate.getDate() + 7); // 7일 후 날짜 계산
+                }
+            }
 
-            // 최근 7일간의 판매량 데이터와 날짜 데이터 분리하여 저장
-            setSalesCounts(completeData.map((item) => item.count));
-            setSalesDates(completeData.map((item) => item.date));
+            localStorage.setItem(storageKey, JSON.stringify(salesData));
+            setData(salesData);
         });
     }, []);
 
-    // 최근 7일간의 판매량 데이터와 날짜 데이터를 이용하여 차트 데이터 생성
-    const data = salesDates.map((date, index) => {
-        return createData(date, salesCounts[index] || 0); // 최근 7일간의 데이터가 없다면 0으로 표시
-    });
+    return <TimeChart data={data} title={chartTitle} />;
+}
 
-    return <TimeChart data={data} title={"최근 7일간 상품 판매량"} />;
+function WeeklyChart() {
+    return useChartData(6, "weeklySalesData", "최근 7일간 상품 판매량");
+}
+
+function MonthlyChart() {
+    return useChartData(27, "monthlySalesData", "최근 28일간 상품 판매량");
+}
+
+function AllTimeChart() {
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        axios.get("/api/sales/date").then((response) => {
+            const sortedData = response.data.sort(
+                (a, b) => new Date(a.date) - new Date(b.date)
+            );
+            const newData = sortedData.map((item) =>
+                createData(item.date, item.count)
+            );
+            setData(newData);
+        });
+    }, []);
+
+    return <TimeChart data={data} title="모든 기간 상품 판매량" />;
 }
 
 function getMissingDates(data, startDate, endDate) {
@@ -131,73 +192,3 @@ function getMissingDates(data, startDate, endDate) {
     }
     return missingDates;
 }
-
-function MonthlyChart() {
-    const [data, setData] = useState([]);
-
-    useEffect(() => {
-        const today = new Date();
-        const time = new Date(today);
-        time.setDate(time.getDate() - 27); // 최근 28일간의 날짜 범위 계산
-
-        axios.get("/api/sales/date").then((response) => {
-            const sortedData = response.data
-                .filter(
-                    (item) =>
-                        new Date(item.date) >= time &&
-                        new Date(item.date) <= today
-                ) // 최근 28일간의 데이터만 선택
-                .sort((a, b) => new Date(a.date) - new Date(b.date));
-
-            const salesData = [];
-            let groupStartDate = new Date(time);
-            while (groupStartDate <= today) {
-                const groupEndDate = new Date(groupStartDate);
-                groupEndDate.setDate(groupEndDate.getDate() + 6); // 7일 후 날짜 계산
-                const groupData = sortedData.filter(
-                    (item) =>
-                        new Date(item.date) >= groupStartDate &&
-                        new Date(item.date) <= groupEndDate
-                ); // 그룹에 해당하는 데이터만 선택
-                const salesCount = groupData.reduce(
-                    (sum, item) => sum + item.count,
-                    0
-                );
-                salesData.push({
-                    time: groupStartDate.toISOString().slice(0, 10),
-                    endDate: groupEndDate.toISOString().slice(0, 10),
-                    amount: salesCount,
-                });
-                groupStartDate.setDate(groupStartDate.getDate() + 7); // 7일 후 날짜 계산
-            }
-
-            // 7일 단위로 묶인 판매량 데이터 저장
-            setData(salesData);
-        });
-    }, []);
-
-    return <TimeChart data={data} title={"최근 28일간 상품 판매량"} />;
-}
-
-function AllTimeChart() {
-    let data = [];
-    const [salesDates, setSalesDates] = useState([]);
-    const [salesCounts, setSalesCounts] = useState([]);
-
-    useEffect(() => {
-        axios.get("/api/sales/date").then((response) => {
-            const sortedData = response.data.sort((a, b) => {
-                return new Date(a.date) - new Date(b.date);
-            });
-            setSalesCounts(sortedData.map((item) => item.count));
-            setSalesDates(sortedData.map((item) => item.date));
-        });
-    }, []);
-    console.log(salesDates, salesCounts);
-    data = salesDates.map((date, index) => {
-        return createData(date, salesCounts[index]);
-    });
-
-    return <TimeChart data={data} title={"모든 기간 상품 판매량"} />;
-}
-

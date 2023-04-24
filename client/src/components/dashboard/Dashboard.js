@@ -9,7 +9,7 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Chart from "./Chart";
 import Deposits from "./Deposits";
-import { SummaryDefective } from "../defective/DefectiveDetail";
+import Defective from "./Defective";
 import { useState } from "react";
 
 import HomeLayout from "../HomeLayout";
@@ -21,6 +21,7 @@ function DashboardPage() {
 
     const handleChange = (event) => {
         setByDate(event.target.value);
+        console.log(byDate);
     };
 
     return (
@@ -118,10 +119,10 @@ function DashboardPage() {
                                         p: 2,
                                         display: "flex",
                                         flexDirection: "column",
-                                        height: 500,
+                                        height: 550,
                                     }}
                                 >
-                                    <SummaryDefective />
+                                    <Defective />
                                 </Paper>
                             </Grid>
                         </Grid>
