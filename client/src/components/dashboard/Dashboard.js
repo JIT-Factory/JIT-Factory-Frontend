@@ -92,7 +92,7 @@ function DashboardPage() {
                                         height: 400,
                                     }}
                                 >
-                                    <Chart />
+                                    <Chart byDate={byDate} />
                                 </Paper>
                             </Grid>
                             {/* Recent Deposits */}
