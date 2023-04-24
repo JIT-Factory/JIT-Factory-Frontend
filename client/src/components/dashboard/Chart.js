@@ -83,7 +83,7 @@ function createData(date, count) {
     return { time: date.slice(5, 10), amount: count };
 }
 
-function WeeklyChart() {
+export function WeeklyChart() {
     const [salesDates, setSalesDates] = useState([]);
     const [salesCounts, setSalesCounts] = useState([]);
 
@@ -104,8 +104,6 @@ function WeeklyChart() {
                         new Date(item.date) <= today
                 ) // 최근 7일간의 데이터만 선택
                 .sort((a, b) => new Date(a.date) - new Date(b.date));
-
-            console.log(sortedData);
 
             const missingDates = getMissingDates(sortedData, startDate, today);
             const completeData = [...sortedData, ...missingDates].sort(
@@ -139,7 +137,7 @@ function getMissingDates(data, startDate, endDate) {
     return missingDates;
 }
 
-function MonthlyChart() {
+export function MonthlyChart() {
     const [data, setData] = useState([]);
 
     useEffect(() => {
@@ -187,7 +185,7 @@ function MonthlyChart() {
     return <TimeChart data={data} title={"최근 28일간 상품 판매량"} />;
 }
 
-function AllTimeChart() {
+export function AllTimeChart() {
     let data = [];
     const [salesDates, setSalesDates] = useState([]);
     const [salesCounts, setSalesCounts] = useState([]);
@@ -201,7 +199,6 @@ function AllTimeChart() {
             setSalesDates(sortedData.map((item) => item.date));
         });
     }, []);
-    console.log(salesDates, salesCounts);
     data = salesDates.map((date, index) => {
         return createData(date, salesCounts[index]);
     });

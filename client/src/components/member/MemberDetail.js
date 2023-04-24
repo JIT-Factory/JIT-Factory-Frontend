@@ -48,7 +48,7 @@ export default function MemberDetail() {
             .catch((error) => {
                 console.error(error);
             });
-    }, [token]);
+    }, []);
 
     return (
         <React.Fragment>
