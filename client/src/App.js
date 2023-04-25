@@ -9,19 +9,8 @@ import Member from "./components/member/MemberPage";
 import DefectivePage from "./components/defective/DefectivePage";
 import SalesPage from "./components/sales/SalesPage";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 
 function App() {
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        const storedToken = localStorage.getItem("token");
-        if (storedToken) {
-        } else {
-            navigate("/login");
-        }
-    }, [navigate]);
-
     return (
         <div className="App">
             <Routes>

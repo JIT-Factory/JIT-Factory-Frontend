@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+import Stack from "@mui/material/Stack";
 import {
     Avatar,
     Button,
@@ -34,11 +35,17 @@ const SignUpPage = () => {
     const theme = createTheme();
     const [admin, setAdmin] = useState(false);
     const [adminEnabled, setAdminEnabled] = useState(false);
+    const [accessEmail, setAccessEmail] = useState(""); // 이메일 상태 변수
+    const [emailString, setEmailString] = useState(""); // 이메일 인증 post 결과
     const [emailError, setEmailError] = useState("");
+    const [emailCheckError, setEmailCheckError] = useState("");
     const [passwordState, setPasswordState] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [nameError, setNameError] = useState("");
     const [registerError, setRegisterError] = useState("");
+    const [emailToken, setEmailToken] = useState(false);
+
+    const [seconds, setSeconds] = useState(300); // 초(second) 단위로 저장
     const navigate = useNavigate();
 
     const onhandlePost = async (data) => {
@@ -79,14 +86,14 @@ const SignUpPage = () => {
         e.preventDefault();
 
         const data = new FormData(e.currentTarget);
-        console.log(admin);
         const joinData = {
             email: data.get("email"),
+            emailCheck: data.get("emailCheck"),
             name: data.get("name"),
             password: data.get("password"),
             rePassword: data.get("rePassword"),
         };
-        const { email, name, password, rePassword } = joinData;
+        const { email, emailCheck, name, password, rePassword } = joinData;
 
         // 이메일 유효성 체크
         const emailRegex =
@@ -94,6 +101,11 @@ const SignUpPage = () => {
         if (!emailRegex.test(email))
             setEmailError("올바른 이메일 형식이 아닙니다.");
         else setEmailError("");
+
+        // 인증된 메일을 사용했는지
+        if (emailCheck !== emailString)
+            setEmailCheckError("유효하지 않은 인증입니다.");
+        else setEmailCheckError("");
 
         // 비밀번호 유효성 체크
         const passwordRegex = /^.{4,25}$/;
@@ -114,6 +126,7 @@ const SignUpPage = () => {
 
         if (
             emailRegex.test(email) &&
+            emailCheck == emailString &&
             passwordRegex.test(password) &&
             password === rePassword &&
             nameRegex.test(name)
@@ -130,10 +143,18 @@ const SignUpPage = () => {
 
     useEffect(() => {
         document.addEventListener("keydown", handleKeyDown);
+        const interval = setInterval(() => {
+            setSeconds((seconds) => seconds - 1);
+        }, 1000);
+
         return () => {
+            clearInterval(interval);
             document.removeEventListener("keydown", handleKeyDown);
         };
     }, []);
+
+    const minute = Math.floor(seconds / 60);
+    const second = seconds % 60;
 
     return (
         <ThemeProvider theme={theme}>
@@ -159,7 +180,7 @@ const SignUpPage = () => {
                     >
                         <FormControl component="fieldset" variant="standard">
                             <Grid container spacing={2}>
-                                <Grid item xs={12}>
+                                <Grid item xs={12} style={{ display: "flex" }}>
                                     <TextField
                                         required
                                         autoFocus
@@ -169,8 +190,84 @@ const SignUpPage = () => {
                                         name="email"
                                         label="이메일 주소"
                                         error={emailError !== "" || false}
-                                    />
+                                        onChange={(e) =>
+                                            setAccessEmail(e.target.value)
+                                        } // 사용자가 입력한 이메일 값을 이메일 상태 변수에 저장
+                                    ></TextField>
+                                    <Stack
+                                        spacing={2}
+                                        direction="row"
+                                        style={{ paddingLeft: "5px" }}
+                                    >
+                                        <Button
+                                            variant="contained"
+                                            onClick={() => {
+                                                setEmailToken(true);
+                                                setSeconds(300);
+                                                if (emailToken === true) {
+                                                    setSeconds(300);
+                                                }
+                                                axios
+                                                    .post(
+                                                        "/api/auth/signup/emailConfirm",
+                                                        { email: accessEmail }
+                                                    )
+                                                    .then((response) => {
+                                                        setEmailString(
+                                                            response.data
+                                                        );
+                                                    })
+                                                    .catch((error) => {
+                                                        console.error(error);
+                                                    });
+                                            }}
+                                        >
+                                            인증
+                                        </Button>
+                                    </Stack>
+                                    <br />
                                 </Grid>
+
+                                {emailToken === true ? (
+                                    <Grid
+                                        item
+                                        xs={12}
+                                        style={{
+                                            display: "flex",
+                                            alignItems: "flex-end",
+                                        }}
+                                    >
+                                        <TextField
+                                            required
+                                            autoFocus
+                                            type="emailCheck"
+                                            id="emailCheck"
+                                            name="emailCheck"
+                                            label="인증코드"
+                                            error={
+                                                emailCheckError !== "" || false
+                                            }
+                                        >
+                                            인증코드
+                                        </TextField>
+                                        <p
+                                            style={{
+                                                paddingLeft: "0.5vmax",
+                                                color: "#999",
+                                                fontSize: "0.7vmax",
+                                                verticalAlign: "bottom",
+                                                marginBottom: "0",
+                                            }}
+                                        >
+                                            유효 시간 {minute}:
+                                            {second < 10 ? "0" : ""}
+                                            {second}
+                                        </p>
+                                    </Grid>
+                                ) : (
+                                    void 0
+                                )}
+
                                 <FormHelperTexts>{emailError}</FormHelperTexts>
                                 <Grid item xs={12}>
                                     <TextField
@@ -248,5 +345,4 @@ const SignUpPage = () => {
         </ThemeProvider>
     );
 };
-
 export default SignUpPage;
