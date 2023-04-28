@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useEffect } from "react";
 import "./auth.css";
 
 import { useNavigate } from "react-router-dom";
@@ -19,6 +19,7 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import jwt_decode from "jwt-decode";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
@@ -26,8 +27,16 @@ const theme = createTheme();
 
 export default function LoginPage() {
     const { setToken } = authSlice.actions;
+    const { setFactory } = authSlice.actions;
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const factoryName = localStorage.getItem("factoryName");
+        if (factoryName) {
+            dispatch(setFactory(factoryName));
+        }
+    }, []);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -43,13 +52,18 @@ export default function LoginPage() {
             .post("/api/auth/login", postData)
             .then(function (response) {
                 const authorizationHeader = response.headers["authorization"];
+                const payload = jwt_decode(authorizationHeader);
+                const factory = payload.factoryName;
                 dispatch(setToken(authorizationHeader));
+                dispatch(setFactory(factory));
                 if (authorizationHeader) {
                     localStorage.setItem("token", authorizationHeader);
+                    localStorage.setItem("factoryName", factory);
                 } else {
                     console.error("Authorization header not found in response");
                 }
                 console.log(response, "성공");
+                console.log(authorizationHeader);
                 navigate("/");
             })
             .catch(function (err) {

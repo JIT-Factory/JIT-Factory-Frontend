@@ -24,7 +24,7 @@ import MuiAppBar from "@mui/material/AppBar";
 
 import { useNavigate } from "react-router-dom";
 import jwt_decode from "jwt-decode";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const drawerWidth = 240;
 
@@ -75,20 +75,22 @@ const AppBar = styled(MuiAppBar, {
 function HomeLayout() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [userName, setUserName] = useState("");
+    const [factory, setFactory] = useState("");
     const [open] = useState(true);
     const [role, setRole] = useState("");
+    const factoryName = useSelector((state) => state.auth.factoryName);
 
     useEffect(() => {
+        const storedFactoryName = localStorage.getItem("factoryName");
         const storedToken = localStorage.getItem("token");
         if (storedToken) {
             const tokenData = jwt_decode(storedToken);
-            setUserName(tokenData.email.split("@")[0]);
+            setFactory(storedFactoryName);
             setRole(tokenData.role.split("_")[1]);
         } else {
             navigate("/login");
         }
-    }, [dispatch, navigate, role]);
+    }, []);
 
     return (
         <div>
@@ -122,7 +124,7 @@ function HomeLayout() {
                 ) : (
                     void 0
                 )}
-                <p>{userName}</p>
+                <p>{factory}</p>
                 <Divider />
                 <List component="nav">
                     <HomeListItems />

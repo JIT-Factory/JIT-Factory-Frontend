@@ -13,7 +13,7 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setToken } from "../redux/authSlice";
+import { setFactory, setToken } from "../redux/authSlice";
 
 import axios from "axios";
 
@@ -132,7 +132,6 @@ export function DefectiveListItems() {
         </ListItemButton>
     );
 }
-    
 
 export default function LogoutListItems() {
     const dispatch = useDispatch();
@@ -145,8 +144,10 @@ export default function LogoutListItems() {
             })
             .then(function (response) {
                 dispatch(setToken(""));
+                dispatch(setFactory(""));
                 console.log(response, "로그아웃 성공");
                 localStorage.removeItem("token");
+                localStorage.removeItem("factoryName");
                 navigate("/login");
             })
             .catch(function (err) {

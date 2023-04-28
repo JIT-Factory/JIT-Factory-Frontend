@@ -1,12 +1,9 @@
-import { Fragment, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { Fragment, useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
-import {
-    fetchDailyProducts,
-    fetchWeeklyProducts,
-    fetchMonthlyProducts,
-} from "../redux/productsSlice";
+
+import axios from "axios";
 
 function SalesSection({ title, salesSum, salesDate }) {
     return (
@@ -35,60 +32,66 @@ function SalesSection({ title, salesSum, salesDate }) {
 }
 
 function DailySales() {
-    const dispatch = useDispatch();
-    const { salesSum, salesDate } = useSelector(
-        (state) => state.products.daily
-    );
-
+    const now = new Date();
+    const [dailySales, setDailySales] = useState(0);
+    //const factoryName = useSelector((state) => state.auth.factoryName);
+    const factoryName = localStorage.getItem("factoryName");
     useEffect(() => {
-        dispatch(fetchDailyProducts());
-    }, [dispatch]);
+        axios
+            .get(
+                `api/sales/day/${factoryName}/${now.getFullYear()}-${(
+                    now.getMonth() + 1
+                )
+                    .toString()
+                    .padStart(2, "0")}-${now
+                    .getDate()
+                    .toString()
+                    .padStart(2, "0")}`
+            )
+            .then((response) => {
+                setDailySales(response.data[0].sales);
+            });
+    }, []);
 
-    return (
-        <SalesSection
-            title="금일 매출"
-            salesSum={salesSum}
-            salesDate={salesDate}
-        />
-    );
+    return <SalesSection title="금일 매출" salesSum={dailySales} />;
 }
 
 function WeeklySales() {
-    const dispatch = useDispatch();
-    const { salesSum, salesDate } = useSelector(
-        (state) => state.products.weekly
-    );
-
+    const [weeklySales, setWeeklySales] = useState(0);
+    //const factoryName = useSelector((state) => state.auth.factoryName);
+    const factoryName = localStorage.getItem("factoryName");
     useEffect(() => {
-        dispatch(fetchWeeklyProducts());
-    }, [dispatch]);
+        axios.get(`api/sales/week/${factoryName}`).then((response) => {
+            const salesSum = response.data.reduce(
+                (accumulator, currentValue) => {
+                    return accumulator + currentValue.sales;
+                },
+                0
+            );
+            setWeeklySales(salesSum);
+        });
+    }, []);
 
-    return (
-        <SalesSection
-            title="주간 매출"
-            salesSum={salesSum}
-            salesDate={salesDate}
-        />
-    );
+    return <SalesSection title="주간 매출" salesSum={weeklySales} />;
 }
 
 function MonthlySales() {
-    const dispatch = useDispatch();
-    const { salesSum, salesDate } = useSelector(
-        (state) => state.products.monthly
-    );
-
+    const [MonthlySales, setMonthlySales] = useState(0);
+    //const factoryName = useSelector((state) => state.auth.factoryName);
+    const factoryName = localStorage.getItem("factoryName");
     useEffect(() => {
-        dispatch(fetchMonthlyProducts());
-    }, [dispatch]);
+        axios.get(`api/sales/month/${factoryName}`).then((response) => {
+            const salesSum = response.data.reduce(
+                (accumulator, currentValue) => {
+                    return accumulator + currentValue.sales;
+                },
+                0
+            );
+            setMonthlySales(salesSum);
+        });
+    }, []);
 
-    return (
-        <SalesSection
-            title="월간 매출"
-            salesSum={salesSum}
-            salesDate={salesDate}
-        />
-    );
+    return <SalesSection title="주간 매출" salesSum={MonthlySales} />;
 }
 
 export default function Deposits(props) {

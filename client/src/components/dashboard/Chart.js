@@ -12,6 +12,8 @@ import {
 } from "recharts";
 import axios from "axios";
 
+import { useSelector } from "react-redux";
+
 export default function Chart(props) {
     return (
         <>
@@ -86,6 +88,8 @@ function createData(date, count) {
 export function WeeklyChart() {
     const [salesDates, setSalesDates] = useState([]);
     const [salesCounts, setSalesCounts] = useState([]);
+    const factoryName = localStorage.getItem("factoryName");
+    //const factoryName = useSelector((state) => state.auth.factoryName);
 
     useEffect(() => {
         const today = new Date();
@@ -93,7 +97,7 @@ export function WeeklyChart() {
         const startDate = new Date(today);
         startDate.setDate(startDate.getDate() - 6); // 최근 7일간의 날짜 범위 계산
 
-        axios.get("/api/sales/date").then((response) => {
+        axios.get(`/api/sales/name/${factoryName}`).then((response) => {
             // 4월 25일 데이터가 들어있다.
 
             // 여기서부터 문제 오늘날을 포함한 데이터가 안들어가있음
@@ -139,14 +143,15 @@ function getMissingDates(data, startDate, endDate) {
 
 export function MonthlyChart() {
     const [data, setData] = useState([]);
-
+    //const factoryName = useSelector((state) => state.auth.factoryName);
+    const factoryName = localStorage.getItem("factoryName");
     useEffect(() => {
         const today = new Date();
         today.setHours(23, 59, 59); // 시간 정보를 0시 0분 0초로 설정
         const time = new Date(today);
         time.setDate(time.getDate() - 27); // 최근 28일간의 날짜 범위 계산
 
-        axios.get("/api/sales/date").then((response) => {
+        axios.get(`/api/sales/name/${factoryName}`).then((response) => {
             const sortedData = response.data
                 .filter(
                     (item) =>
@@ -189,9 +194,10 @@ export function AllTimeChart() {
     let data = [];
     const [salesDates, setSalesDates] = useState([]);
     const [salesCounts, setSalesCounts] = useState([]);
-
+    //const factoryName = useSelector((state) => state.auth.factoryName);
+    const factoryName = localStorage.getItem("factoryName");
     useEffect(() => {
-        axios.get("/api/sales/date").then((response) => {
+        axios.get(`/api/sales/name/${factoryName}`).then((response) => {
             const sortedData = response.data.sort((a, b) => {
                 return new Date(a.date) - new Date(b.date);
             });

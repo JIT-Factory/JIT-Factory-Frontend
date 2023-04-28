@@ -49,8 +49,8 @@ const SignUpPage = () => {
     const navigate = useNavigate();
 
     const onhandlePost = async (data) => {
-        const { email, name, password } = data;
-        const postData = { email, name, password };
+        const { email, name, password, factoryName } = data;
+        const postData = { email, name, password, factoryName };
         console.log(postData);
         // post
         if (admin === false) {
@@ -92,8 +92,10 @@ const SignUpPage = () => {
             name: data.get("name"),
             password: data.get("password"),
             rePassword: data.get("rePassword"),
+            factoryName: data.get("factory"),
         };
-        const { email, emailCheck, name, password, rePassword } = joinData;
+        const { email, emailCheck, name, password, rePassword, factoryName } =
+            joinData;
 
         // 이메일 유효성 체크
         const emailRegex =
@@ -308,6 +310,16 @@ const SignUpPage = () => {
                                     />
                                 </Grid>
                                 <FormHelperTexts>{nameError}</FormHelperTexts>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        required
+                                        fullWidth
+                                        id="factory"
+                                        name="factory"
+                                        label="공장이름 입력"
+                                        error={false}
+                                    />
+                                </Grid>
                                 <Grid
                                     item
                                     xs={12}

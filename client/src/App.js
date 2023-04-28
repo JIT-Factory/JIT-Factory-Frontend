@@ -8,7 +8,6 @@ import LiveStreamPage from "./components/livestream/LiveStreamPage";
 import Member from "./components/member/MemberPage";
 import DefectivePage from "./components/defective/DefectivePage";
 import SalesPage from "./components/sales/SalesPage";
-import { useNavigate } from "react-router-dom";
 
 function App() {
     return (
