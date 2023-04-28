@@ -8,8 +8,8 @@ import TableRow from "@mui/material/TableRow";
 import axios from "axios";
 
 // Generate user Data
-function createData(id, userNumber, role, name, email) {
-    return { id, userNumber, role, name, email };
+function createData(id, userNumber, role, name, email, factoryName) {
+    return { id, userNumber, role, name, email, factoryName };
 }
 
 export default function MemberDetail() {
@@ -31,7 +31,8 @@ export default function MemberDetail() {
                             user.id,
                             user.role,
                             user.name,
-                            user.email
+                            user.email,
+                            user.factoryName
                         )
                     )
                     .sort((a, b) => {
@@ -68,6 +69,9 @@ export default function MemberDetail() {
                         <TableCell>
                             <h2>이메일</h2>
                         </TableCell>
+                        <TableCell>
+                            <h2>공장</h2>
+                        </TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -77,6 +81,7 @@ export default function MemberDetail() {
                             <TableCell>{row.role}</TableCell>
                             <TableCell>{row.name}</TableCell>
                             <TableCell>{row.email}</TableCell>
+                            <TableCell>{row.factoryName}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
