@@ -49,7 +49,9 @@ function DailySales() {
                     .padStart(2, "0")}`
             )
             .then((response) => {
-                setDailySales(response.data[0].sales);
+                if (response.data[0]) {
+                    setDailySales(response.data[0].sales);
+                }
             });
     }, []);
 
@@ -91,7 +93,7 @@ function MonthlySales() {
         });
     }, []);
 
-    return <SalesSection title="주간 매출" salesSum={MonthlySales} />;
+    return <SalesSection title="월간 매출" salesSum={MonthlySales} />;
 }
 
 export default function Deposits(props) {
