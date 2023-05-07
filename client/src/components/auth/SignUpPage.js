@@ -94,8 +94,7 @@ const SignUpPage = () => {
             rePassword: data.get("rePassword"),
             factoryName: data.get("factory"),
         };
-        const { email, emailCheck, name, password, rePassword, factoryName } =
-            joinData;
+        const { email, emailCheck, name, password, rePassword } = joinData;
 
         // 이메일 유효성 체크
         const emailRegex =

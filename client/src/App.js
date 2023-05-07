@@ -8,6 +8,8 @@ import LiveStreamPage from "./components/livestream/LiveStreamPage";
 import Member from "./components/member/MemberPage";
 import DefectivePage from "./components/defective/DefectivePage";
 import SalesPage from "./components/sales/SalesPage";
+import ProcessPage from "./components/process/ProcessPage";
+import ProductPage from "./components/product/ProductPage";
 
 function App() {
     return (
@@ -20,6 +22,8 @@ function App() {
                 <Route path="/defective" element={<DefectivePage />} />
                 <Route path="/sales" element={<SalesPage />} />
                 <Route path="/stream" element={<LiveStreamPage />} />
+                <Route path="/process" element={<ProcessPage />} />
+                <Route path="/product" element={<ProductPage />} />
             </Routes>
         </div>
     );
