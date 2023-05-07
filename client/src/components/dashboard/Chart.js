@@ -11,8 +11,13 @@ import {
     Tooltip,
 } from "recharts";
 import axios from "axios";
+import { Typography } from "@mui/material";
 
-import { useSelector } from "react-redux";
+import Box from "@mui/material/Box";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 
 export default function Chart(props) {
     return (
@@ -190,25 +195,171 @@ export function MonthlyChart() {
     return <TimeChart data={data} title={"최근 28일간 상품 판매량"} />;
 }
 
-export function AllTimeChart() {
-    let data = [];
-    const [salesDates, setSalesDates] = useState([]);
-    const [salesCounts, setSalesCounts] = useState([]);
-    //const factoryName = useSelector((state) => state.auth.factoryName);
-    const factoryName = localStorage.getItem("factoryName");
-    useEffect(() => {
-        axios.get(`/api/sales/name/${factoryName}`).then((response) => {
-            const sortedData = response.data.sort((a, b) => {
-                return new Date(a.date) - new Date(b.date);
-            });
-            setSalesCounts(sortedData.map((item) => item.count));
-            setSalesDates(sortedData.map((item) => item.date));
-        });
-    }, []);
-    data = salesDates.map((date, index) => {
-        return createData(date, salesCounts[index]);
-    });
-
-    return <TimeChart data={data} title={"모든 기간 상품 판매량"} />;
+function createDataForAlltime(date, count) {
+    return { time: date.slice(8, 11), amount: count };
 }
 
+export function AllTimeChart() {
+    const theme = useTheme();
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+    const [selectedMonth, setSelectedMonth] = useState(
+        new Date().getMonth() + 1
+    );
+    const [salesDates, setSalesDates] = useState([]);
+    const [salesCounts, setSalesCounts] = useState([]);
+    const [selectedSales, setSelectedSales] = useState(0);
+    const factoryName = localStorage.getItem("factoryName");
+
+    useEffect(() => {
+        axios
+            .get(
+                `/api/sales/month/${factoryName}/${selectedYear}/${selectedMonth
+                    .toString()
+                    .padStart(2, "0")}`
+            )
+            .then((response) => {
+                // API 응답이 있을 경우에만 실행
+                if (response.data.length > 0) {
+                    const sortedData = response.data.sort((a, b) => {
+                        return new Date(a.date) - new Date(b.date);
+                    });
+                    setSalesCounts(sortedData.map((item) => item.count));
+                    setSalesDates(sortedData.map((item) => item.date));
+                    setSelectedSales(
+                        sortedData.reduce(
+                            (total, item) => total + item.sales,
+                            0
+                        )
+                    );
+                } else {
+                    // API 응답이 없는 경우에는 상태를 빈 배열로 초기화
+                    setSalesCounts([]);
+                    setSalesDates([]);
+                    setSelectedSales(0);
+                }
+            });
+    }, [factoryName, selectedYear, selectedMonth]);
+
+    const data = salesDates.map((date, index) => {
+        return createDataForAlltime(date + "일", salesCounts[index]);
+    });
+
+    const handleYearChange = (event) => {
+        setSelectedYear(parseInt(event.target.value));
+    };
+
+    const handleMonthChange = (event) => {
+        setSelectedMonth(parseInt(event.target.value));
+    };
+    return (
+        <React.Fragment>
+            <Box sx={{ minWidth: 120, padding: "5px" }}>
+                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                    <InputLabel id="year-select-label">년도</InputLabel>
+                    <Select
+                        labelId="year-select-label"
+                        id="year-select"
+                        value={selectedYear}
+                        onChange={handleYearChange}
+                    >
+                        <MenuItem value={new Date().getFullYear()}>
+                            {new Date().getFullYear()}년
+                        </MenuItem>
+                        <MenuItem value={new Date().getFullYear() - 1}>
+                            {new Date().getFullYear() - 1}년
+                        </MenuItem>
+                        <MenuItem value={new Date().getFullYear() - 2}>
+                            {new Date().getFullYear() - 2}년
+                        </MenuItem>
+                    </Select>
+                </FormControl>
+
+                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                    <InputLabel id="month-select-label">월</InputLabel>
+                    <Select
+                        labelId="month-select-label"
+                        id="month-select"
+                        value={selectedMonth}
+                        label="Month"
+                        onChange={handleMonthChange}
+                    >
+                        <MenuItem value="1">1월</MenuItem>
+                        <MenuItem value="2">2월</MenuItem>
+                        <MenuItem value="3">3월</MenuItem>
+                        <MenuItem value="4">4월</MenuItem>
+                        <MenuItem value="5">5월</MenuItem>
+                        <MenuItem value="6">6월</MenuItem>
+                        <MenuItem value="7">7월</MenuItem>
+                        <MenuItem value="8">8월</MenuItem>
+                        <MenuItem value="9">9월</MenuItem>
+                        <MenuItem value="10">10월</MenuItem>
+                        <MenuItem value="11">11월</MenuItem>
+                        <MenuItem value="12">12월</MenuItem>
+                    </Select>
+                </FormControl>
+            </Box>
+
+            {salesDates.length > 0 && salesCounts.length > 0 ? (
+                <ResponsiveContainer height={400}>
+                    <LineChart
+                        data={data}
+                        margin={{
+                            top: 16,
+                            right: 16,
+                            bottom: 0,
+                            left: 24,
+                        }}
+                    >
+                        <XAxis
+                            dataKey="time"
+                            stroke={theme.palette.text.secondary}
+                            style={theme.typography.body2}
+                        />
+                        <YAxis
+                            stroke={theme.palette.text.secondary}
+                            style={theme.typography.body2}
+                        >
+                            <Label
+                                angle={270}
+                                position="left"
+                                style={{
+                                    textAnchor: "middle",
+                                    fill: theme.palette.text.primary,
+                                    ...theme.typography.body1,
+                                }}
+                            >
+                                Amount (/EA)
+                            </Label>
+                        </YAxis>
+                        <Line
+                            isAnimationActive={false}
+                            type="monotone"
+                            dataKey="amount"
+                            stroke={theme.palette.primary.main}
+                            dot={true}
+                        />
+                        <Tooltip
+                            formatter={(value, name, props) => [value, "Sales"]}
+                            labelFormatter={(label) => label}
+                        />
+                    </LineChart>
+                </ResponsiveContainer>
+            ) : (
+                <div
+                    style={{
+                        height: 300,
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                >
+                    <Typography variant="h5">No Data</Typography>
+                </div>
+            )}
+            <br />
+            <h3 style={{ paddingLeft: "3vmax", textAlign: "left" }}>
+                {selectedYear}년 {selectedMonth}월 매출액: {selectedSales}원
+            </h3>
+        </React.Fragment>
+    );
+}

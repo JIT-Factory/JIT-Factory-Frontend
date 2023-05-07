@@ -39,38 +39,10 @@ function SalesPage() {
                             container
                             spacing={3}
                             style={{
-                                width: "60%",
+                                width: "100%",
                             }}
-                            paddingTop="5vmax"
+                            paddingTop="8vmax"
                         >
-                            {/* 최근 7일 차트 */}
-                            <Grid item xs={12}>
-                                <Paper
-                                    sx={{
-                                        p: 0,
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        height: 270,
-                                    }}
-                                >
-                                    <WeeklyChart />
-                                </Paper>
-                            </Grid>
-
-                            {/* 최근 28일 차트 */}
-                            <Grid item xs={12}>
-                                <Paper
-                                    sx={{
-                                        p: 0,
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        height: 270,
-                                    }}
-                                >
-                                    <MonthlyChart />
-                                </Paper>
-                            </Grid>
-
                             {/* 모든 기간 차트 */}
                             <Grid item xs={12}>
                                 <Paper
@@ -78,24 +50,10 @@ function SalesPage() {
                                         p: 0,
                                         display: "flex",
                                         flexDirection: "column",
-                                        height: 270,
+                                        height: 650,
                                     }}
                                 >
                                     <AllTimeChart />
-                                </Paper>
-                            </Grid>
-
-                            {/* Recent Deposits */}
-                            <Grid item xs={12} md={4} lg={3}>
-                                <Paper
-                                    sx={{
-                                        p: 2,
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        height: 400,
-                                    }}
-                                >
-                                    <Deposits />
                                 </Paper>
                             </Grid>
                         </Grid>

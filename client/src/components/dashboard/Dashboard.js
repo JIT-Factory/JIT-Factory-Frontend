@@ -112,7 +112,6 @@ function DashboardPage() {
                                     <Deposits byDate={byDate} />
                                 </Paper>
                             </Grid>
-                            {/* Recent Orders */}
                             <Grid item xs={12}>
                                 <Paper
                                     sx={{

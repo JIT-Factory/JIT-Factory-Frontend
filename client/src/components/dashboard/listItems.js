@@ -224,7 +224,7 @@ export function AdminListItems() {
             </ListItemButton>
             <ListItemButton
                 onClick={() => {
-                    navigate("/Material");
+                    navigate("/material");
                 }}
             >
                 <ListItemIcon>
@@ -240,7 +240,7 @@ export function AdminListItems() {
                                 fontWeight: "600",
                             }}
                         >
-                            METERIAL
+                            MATERIAL
                         </Typography>
                     }
                 />
