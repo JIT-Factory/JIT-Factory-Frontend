@@ -11,12 +11,17 @@ import PropTypes from "prop-types";
 import LinearProgress from "@mui/material/LinearProgress";
 import Typography from "@mui/material/Typography";
 
+import { Button, Stack } from "@mui/material";
+
 import "./process.css";
 function ProcessDetail() {
+    const token = localStorage.getItem("token");
     const factoryName = localStorage.getItem("factoryName");
     const [processes, setProcesses] = useState(["default"]);
     const [selectedProcess, setSelectedProcess] = useState("");
     const [processStatus, setProcessStatus] = useState("");
+    const [orderList, setOrderList] = useState([]);
+    const [buttonDisabled, setButtonDisabled] = useState(false);
 
     // 여러개의 컨베이어 벨트 state 선언
     const [conveyorBeltStatus, setConveyorBeltStatus] = useState({
@@ -33,6 +38,18 @@ function ProcessDetail() {
         setSelectedProcess(event.target.value);
     };
 
+    // progress Bar
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setProgress((prevProgress) =>
+                prevProgress >= 100 ? 0 : prevProgress
+            );
+        }, 1000);
+        return () => {
+            clearInterval(timer);
+        };
+    }, [selectedProcess]);
+
     useEffect(() => {
         /* 전체 process 조회 API 생성시 사용
         axios.get("/api/process").then((response) => {
@@ -44,10 +61,15 @@ function ProcessDetail() {
     // 전체 process, 해당 process 컨베이어 벨트의 작동 여부를 10초마다 조회
     useEffect(() => {
         SetUp();
+        checkOrder();
 
-        const interval = setInterval(SetUp, 10000);
+        // 1초마다 progressBar 갱신
+        const intervalSetUp = setInterval(SetUp, 1000);
 
-        return () => clearInterval(interval);
+        // 1분마다 오더 조회
+        const intervalCheckOrder = setInterval(checkOrder, 60000);
+
+        return () => clearInterval(intervalSetUp, intervalCheckOrder);
     }, [selectedProcess]);
 
     const SetUp = () => {
@@ -72,17 +94,25 @@ function ProcessDetail() {
             });
     };
 
-    // 프로세스
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setProgress((prevProgress) =>
-                prevProgress >= 100 ? 0 : prevProgress
-            );
+    const checkOrder = () => {
+        axios
+            .get(`/api/orders/name/${factoryName}`, {
+                headers: {
+                    Authorization: `${token}`,
+                },
+            })
+            .then((response) => {
+                if (response.data) {
+                    setOrderList(response.data);
+                }
+            });
+    };
+
+    const buttonTimer = () => {
+        setTimeout(() => {
+            setButtonDisabled(false);
         }, 1000);
-        return () => {
-            clearInterval(timer);
-        };
-    }, [selectedProcess]);
+    };
 
     return (
         <div>
@@ -102,14 +132,60 @@ function ProcessDetail() {
                         ))}
                     </Select>
                 </FormControl>
+                <br />
+                <br />
+                <Stack
+                    spacing={3}
+                    direction="row"
+                    style={{
+                        justifyContent: "center",
+                        display: "flex",
+                        paddingTop: "10px",
+                    }}
+                >
+                    <Button
+                        className="PositiveBtn"
+                        variant="contained"
+                        style={{ background: "#5A95EC" }}
+                        onClick={() => {
+                            setButtonDisabled(true);
+                            processHandler(factoryName, selectedProcess, "run");
+                            buttonTimer();
+                        }}
+                        disabled={buttonDisabled}
+                    >
+                        RUN
+                    </Button>
+                    <Button
+                        className="NegativeBtn"
+                        variant="contained"
+                        style={{ background: "#F47979" }}
+                        onClick={() => {
+                            setButtonDisabled(true);
+                            processHandler(
+                                factoryName,
+                                selectedProcess,
+                                "stop"
+                            );
+                            buttonTimer();
+                        }}
+                        disabled={buttonDisabled}
+                    >
+                        STOP
+                    </Button>
+                </Stack>
+
                 <div className="text">
                     <h2>현재 공정 상태: {processStatus}</h2>
                     {Object.keys(conveyorBeltStatus).map((key, i) => {
                         return (
-                            <div className="in" key={i}>
-                                <br />
+                            <div
+                                className="in"
+                                key={i}
+                                style={{ paddingTop: "10px" }}
+                            >
                                 <h3>
-                                    컨베이어 {i} : {conveyorBeltStatus[key]}
+                                    컨베이어 {i + 1} : {conveyorBeltStatus[key]}
                                 </h3>
                                 <Box
                                     sx={{ width: "80%", paddingLeft: "5vmax" }}
@@ -119,6 +195,16 @@ function ProcessDetail() {
                             </div>
                         );
                     })}
+
+                    <br />
+                    <h3>잔여 생산량</h3>
+                    {orderList.map((order, index) => (
+                        <div key={index}>
+                            <p>
+                                제품명: {order.productName}, 수량: {order.count}
+                            </p>
+                        </div>
+                    ))}
                 </div>
             </Box>
         </div>
@@ -126,6 +212,12 @@ function ProcessDetail() {
 }
 
 export default ProcessDetail;
+
+function processHandler(factoryName, selectedProcess, status) {
+    axios.post(
+        `/api/process/updateStatus?factoryName=${factoryName}&processName=${selectedProcess}&status=${status}`
+    );
+}
 
 function LinearProgressWithLabel(props) {
     return (

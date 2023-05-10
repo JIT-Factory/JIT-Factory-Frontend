@@ -8,6 +8,7 @@ import Paper from "@mui/material/Paper";
 import HomeLayout from "../HomeLayout";
 import ProcessDetail from "./ProcessDetail";
 
+
 const mdTheme = createTheme();
 
 function ProcessPage() {
@@ -51,7 +52,7 @@ function ProcessPage() {
                                             p: 2,
                                             display: "flex",
                                             flexDirection: "column",
-                                            height: 700,
+                                            height: 800,
                                         }}
                                     >
                                         <ProcessDetail />
