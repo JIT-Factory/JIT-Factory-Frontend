@@ -43,34 +43,34 @@ function ProcessDetail() {
 
     // 전체 process, 해당 process 컨베이어 벨트의 작동 여부를 10초마다 조회
     useEffect(() => {
-        const interval = setInterval(() => {
-            axios
-                .get(
-                    `/api/process?factoryName=${factoryName}&processName=${selectedProcess}`
-                )
-                .then((response) => {
-                    if (response.data) {
-                        setProcessStatus(response.data[0].processStatus);
-                        setConveyorBeltStatus({
-                            firstProcessMachineConveyorBelt:
-                                response.data[0]
-                                    .firstProcessMachineConveyorBelt,
-                            secondProcessMachineConveyorBelt:
-                                response.data[0]
-                                    .secondProcessMachineConveyorBelt,
-                            thirdProcessMachineConveyorBelt:
-                                response.data[0]
-                                    .thirdProcessMachineConveyorBelt,
-                            fourthProcessMachineConveyorBelt:
-                                response.data[0]
-                                    .fourthProcessMachineConveyorBelt,
-                        });
-                    }
-                });
-        }, 10000);
+        SetUp();
+
+        const interval = setInterval(SetUp, 10000);
 
         return () => clearInterval(interval);
     }, [selectedProcess]);
+
+    const SetUp = () => {
+        axios
+            .get(
+                `/api/process?factoryName=${factoryName}&processName=${selectedProcess}`
+            )
+            .then((response) => {
+                if (response.data) {
+                    setProcessStatus(response.data[0].processStatus);
+                    setConveyorBeltStatus({
+                        firstProcessMachineConveyorBelt:
+                            response.data[0].firstProcessMachineConveyorBelt,
+                        secondProcessMachineConveyorBelt:
+                            response.data[0].secondProcessMachineConveyorBelt,
+                        thirdProcessMachineConveyorBelt:
+                            response.data[0].thirdProcessMachineConveyorBelt,
+                        fourthProcessMachineConveyorBelt:
+                            response.data[0].fourthProcessMachineConveyorBelt,
+                    });
+                }
+            });
+    };
 
     // 프로세스
     useEffect(() => {
