@@ -7,12 +7,27 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import axios from "axios";
 
+import PropTypes from "prop-types";
+import LinearProgress from "@mui/material/LinearProgress";
+import Typography from "@mui/material/Typography";
+
 import "./process.css";
 function ProcessDetail() {
     const factoryName = localStorage.getItem("factoryName");
     const [processes, setProcesses] = useState(["default"]);
     const [selectedProcess, setSelectedProcess] = useState("");
     const [processStatus, setProcessStatus] = useState("");
+
+    // 여러개의 컨베이어 벨트 state 선언
+    const [conveyorBeltStatus, setConveyorBeltStatus] = useState({
+        firstProcessMachineConveyorBelt: "",
+        secondProcessMachineConveyorBelt: "",
+        thirdProcessMachineConveyorBelt: "",
+        fourthProcessMachineConveyorBelt: "",
+    });
+
+    // 프로세스 바 진행사항
+    const [progress, setProgress] = useState(0);
 
     const handleProcessChange = (event) => {
         setSelectedProcess(event.target.value);
@@ -26,24 +41,48 @@ function ProcessDetail() {
         */
     }, []);
 
-    // http://localhost:8080/api/process?factoryName=carFactory&processName=default
+    // 전체 process, 해당 process 컨베이어 벨트의 작동 여부를 10초마다 조회
     useEffect(() => {
-        axios
-            .get(
-                `/api/process?factoryName=${factoryName}&processName=${selectedProcess}`
-            )
-            .then((response) => {
-                if (response.data) {
-                    console.log(response.data[0].processStatus);
-                }
-            });
+        const interval = setInterval(() => {
+            axios
+                .get(
+                    `/api/process?factoryName=${factoryName}&processName=${selectedProcess}`
+                )
+                .then((response) => {
+                    if (response.data) {
+                        setProcessStatus(response.data[0].processStatus);
+                        setConveyorBeltStatus({
+                            firstProcessMachineConveyorBelt:
+                                response.data[0]
+                                    .firstProcessMachineConveyorBelt,
+                            secondProcessMachineConveyorBelt:
+                                response.data[0]
+                                    .secondProcessMachineConveyorBelt,
+                            thirdProcessMachineConveyorBelt:
+                                response.data[0]
+                                    .thirdProcessMachineConveyorBelt,
+                            fourthProcessMachineConveyorBelt:
+                                response.data[0]
+                                    .fourthProcessMachineConveyorBelt,
+                        });
+                    }
+                });
+        }, 10000);
+
+        return () => clearInterval(interval);
     }, [selectedProcess]);
-    /*
-    "firstProcessMachineConveyorBelt": "stop",
-    "secondProcessMachineConveyorBelt": "stop",
-    "thirdProcessMachineConveyorBelt": "stop",
-    "fourthProcessMachineConveyorBelt": "stop"
-    */
+
+    // 프로세스
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setProgress((prevProgress) =>
+                prevProgress >= 100 ? 0 : prevProgress
+            );
+        }, 1000);
+        return () => {
+            clearInterval(timer);
+        };
+    }, [selectedProcess]);
 
     return (
         <div>
@@ -65,15 +104,21 @@ function ProcessDetail() {
                 </FormControl>
                 <div className="text">
                     <h2>현재 공정 상태: {processStatus}</h2>
-                    <div className="in">
-                        <h3>컨베이어 1</h3>
-                        <br />
-                        <h3>컨베이어 2</h3>
-                        <br />
-                        <h3>컨베이어 3</h3>
-                        <br />
-                        <h3>컨베이어 4</h3>
-                    </div>
+                    {Object.keys(conveyorBeltStatus).map((key, i) => {
+                        return (
+                            <div className="in" key={i}>
+                                <br />
+                                <h3>
+                                    컨베이어 {i} : {conveyorBeltStatus[key]}
+                                </h3>
+                                <Box
+                                    sx={{ width: "80%", paddingLeft: "5vmax" }}
+                                >
+                                    <LinearProgressWithLabel value={progress} />
+                                </Box>
+                            </div>
+                        );
+                    })}
                 </div>
             </Box>
         </div>
@@ -81,3 +126,27 @@ function ProcessDetail() {
 }
 
 export default ProcessDetail;
+
+function LinearProgressWithLabel(props) {
+    return (
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Box sx={{ width: "100%", mr: 1 }}>
+                <LinearProgress variant="determinate" {...props} />
+            </Box>
+            <Box sx={{ minWidth: 35 }}>
+                <Typography
+                    variant="body2"
+                    color="text.secondary"
+                >{`${Math.round(props.value)}%`}</Typography>
+            </Box>
+        </Box>
+    );
+}
+
+LinearProgressWithLabel.propTypes = {
+    /**
+     * The value of the progress indicator for the determinate and buffer variants.
+     * Value between 0 and 100.
+     */
+    value: PropTypes.number.isRequired,
+};
