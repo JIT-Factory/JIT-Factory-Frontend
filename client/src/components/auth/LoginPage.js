@@ -52,10 +52,12 @@ export default function LoginPage() {
             .post("/api/auth/login", postData)
             .then(function (response) {
                 const authorizationHeader = response.headers["authorization"];
+                dispatch(setToken(authorizationHeader));
+
                 const payload = jwt_decode(authorizationHeader);
                 const factory = payload.factoryName;
-                dispatch(setToken(authorizationHeader));
                 dispatch(setFactory(factory));
+                
                 if (authorizationHeader) {
                     localStorage.setItem("token", authorizationHeader);
                     localStorage.setItem("factoryName", factory);
