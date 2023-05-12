@@ -20,9 +20,10 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import jwt_decode from "jwt-decode";
-
+import { Stack } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
+import { KAKAO_AUTH_URL } from "./dev";
 const theme = createTheme();
 
 export default function LoginPage() {
@@ -37,6 +38,26 @@ export default function LoginPage() {
             dispatch(setFactory(factoryName));
         }
     }, []);
+
+    function handleKakaoLoginSuccess(url) {
+        // URL에서 authorizationCode 추출
+        const authorizationCode = url.split("=")[1];
+
+        // 로그인 API 호출
+        axios
+            .post("/api/login/oauth/kakao/", {
+                authorizationCode: authorizationCode,
+                factoryName: "CarFactory",
+            })
+            .then((response) => {
+                console.log(response);
+                // 로그인 성공 시 처리
+            })
+            .catch((error) => {
+                console.log(error);
+                // 로그인 실패 시 처리
+            });
+    }
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -57,7 +78,7 @@ export default function LoginPage() {
                 const payload = jwt_decode(authorizationHeader);
                 const factory = payload.factoryName;
                 dispatch(setFactory(factory));
-                
+
                 if (authorizationHeader) {
                     localStorage.setItem("token", authorizationHeader);
                     localStorage.setItem("factoryName", factory);
@@ -134,6 +155,7 @@ export default function LoginPage() {
                                     }
                                     label="Remember me"
                                 />
+
                                 <Button
                                     type="submit"
                                     fullWidth
@@ -142,7 +164,46 @@ export default function LoginPage() {
                                 >
                                     LOGIN
                                 </Button>
-                                <Grid container>
+                                <Stack
+                                    spacing={3}
+                                    direction="row"
+                                    style={{
+                                        justifyContent: "center",
+                                        display: "flex",
+                                        paddingTop: "10px",
+                                    }}
+                                >
+                                    <Button>
+                                        <a
+                                            href={KAKAO_AUTH_URL}
+                                            target="_self"
+                                            rel="noopener noreferrer"
+                                        >
+                                            <img
+                                                src={
+                                                    process.env.PUBLIC_URL +
+                                                    "/images/kakao_login_large_narrow.png"
+                                                }
+                                                width={210}
+                                                height={56}
+                                                alt="kakao"
+                                            />
+                                        </a>
+                                    </Button>
+                                    <Button>
+                                        <img
+                                            src={
+                                                process.env.PUBLIC_URL +
+                                                "/images/naver_login.png"
+                                            }
+                                            width={210}
+                                            height={56}
+                                            alt="kakao"
+                                        />
+                                    </Button>
+                                </Stack>
+
+                                <Grid container sx={{ paddingTop: "5px" }}>
                                     {/* <Grid item xs>
                                         <Link href="#" variant="body2">
                                             Forgot password?
@@ -162,3 +223,4 @@ export default function LoginPage() {
         </div>
     );
 }
+

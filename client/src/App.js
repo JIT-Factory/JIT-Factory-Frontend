@@ -11,6 +11,8 @@ import SalesPage from "./components/sales/SalesPage";
 import ProcessPage from "./components/process/ProcessPage";
 import ProductPage from "./components/product/ProductPage";
 
+import KakaoRedirectHandler from "../src/components/auth/kakaoRedirectHandler";
+
 function App() {
     return (
         <div className="App">
@@ -24,6 +26,8 @@ function App() {
                 <Route path="/stream" element={<LiveStreamPage />} />
                 <Route path="/process" element={<ProcessPage />} />
                 <Route path="/product" element={<ProductPage />} />
+
+                <Route path="/oauth/kakao" component={KakaoRedirectHandler} />
             </Routes>
         </div>
     );
