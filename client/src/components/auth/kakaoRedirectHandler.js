@@ -1,22 +1,23 @@
-// 리다이렉트될 화면
-// KakaoRedirectHandeler.js
-
 import React, { useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-const KakaoRedirectHandler = () => {
+function KakaoRedirectHandler() {
+    const navigate = useNavigate();
     useEffect(() => {
-        let params = new URL(document.location.toString()).searchParams;
-        let code = params.get("code"); // 인가코드 받는 부분
+        const params = new URL(window.location.href).searchParams;
+        const code = params.get("code"); // 인가코드 받는 부분
+        const inputFName = prompt("공장 입력");
 
         axios
             .post("/api/login/oauth/kakao", {
                 authorizationCode: code,
-                factoryName: "carFactory",
+                factoryName: inputFName,
             })
             .then((result) => {
-                console.log("good");
-                // 토큰을 활용한 로직을 적어주면된다.
+                if (result.data) {
+                    localStorage.setItem("token", result.data.accessToken);
+                }
             })
             .catch((e) => {
                 console.log(e);
@@ -25,10 +26,10 @@ const KakaoRedirectHandler = () => {
 
     return (
         <div>
-            사실 이페이지는 크게 의미 없다. 첫화면으로 로직이 끝나면
+            사실 이 페이지는 크게 의미 없다. 첫 화면으로 로직이 끝나면
             이동시켜주면 된다.
         </div>
     );
-};
+}
 
 export default KakaoRedirectHandler;

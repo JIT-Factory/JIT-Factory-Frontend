@@ -15,10 +15,10 @@ function createData(id, userNumber, role, name, email, factoryName) {
 export default function MemberDetail() {
     const [rows, setRows] = useState([]);
     const token = localStorage.getItem("token");
-
+    const factoryName = localStorage.getItem("factoryName")
     useEffect(() => {
         axios
-            .get("/api/admin/users", {
+            .get(`/api/admin/users/${factoryName}`, {
                 headers: {
                     Authorization: `${token}`,
                 },

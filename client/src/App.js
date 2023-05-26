@@ -10,7 +10,6 @@ import DefectivePage from "./components/defective/DefectivePage";
 import SalesPage from "./components/sales/SalesPage";
 import ProcessPage from "./components/process/ProcessPage";
 import ProductPage from "./components/product/ProductPage";
-
 import KakaoRedirectHandler from "../src/components/auth/kakaoRedirectHandler";
 
 function App() {
@@ -27,7 +26,7 @@ function App() {
                 <Route path="/process" element={<ProcessPage />} />
                 <Route path="/product" element={<ProductPage />} />
 
-                <Route path="/oauth/kakao" component={KakaoRedirectHandler} />
+                <Route path="/oauth/kakao" element={<KakaoRedirectHandler />} />
             </Routes>
         </div>
     );
