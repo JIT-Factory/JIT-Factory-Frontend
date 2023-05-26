@@ -23,7 +23,7 @@ import jwt_decode from "jwt-decode";
 import { Stack } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-import { KAKAO_AUTH_URL } from "./dev";
+import { KAKAO_AUTH_URL, NAVER_AUTH_URL } from "./dev";
 const theme = createTheme();
 
 export default function LoginPage() {
@@ -191,15 +191,21 @@ export default function LoginPage() {
                                         </a>
                                     </Button>
                                     <Button>
-                                        <img
-                                            src={
-                                                process.env.PUBLIC_URL +
-                                                "/images/naver_login.png"
-                                            }
-                                            width={210}
-                                            height={56}
-                                            alt="kakao"
-                                        />
+                                        <a
+                                            href={NAVER_AUTH_URL}
+                                            target="_self"
+                                            rel="noopener noreferrer"
+                                        >
+                                            <img
+                                                src={
+                                                    process.env.PUBLIC_URL +
+                                                    "/images/naver_login.png"
+                                                }
+                                                width={210}
+                                                height={56}
+                                                alt="naver"
+                                            />
+                                        </a>
                                     </Button>
                                 </Stack>
 

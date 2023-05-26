@@ -10,7 +10,8 @@ import DefectivePage from "./components/defective/DefectivePage";
 import SalesPage from "./components/sales/SalesPage";
 import ProcessPage from "./components/process/ProcessPage";
 import ProductPage from "./components/product/ProductPage";
-import KakaoRedirectHandler from "../src/components/auth/kakaoRedirectHandler";
+import KakaoRedirectHandler from "./util/kakaoRedirectHandler";
+import NaverRedirectHandler from "./util/NaverRedirectHandler";
 
 function App() {
     return (
@@ -27,6 +28,7 @@ function App() {
                 <Route path="/product" element={<ProductPage />} />
 
                 <Route path="/oauth/kakao" element={<KakaoRedirectHandler />} />
+                <Route path="/oauth/naver" element={<NaverRedirectHandler />} />
             </Routes>
         </div>
     );

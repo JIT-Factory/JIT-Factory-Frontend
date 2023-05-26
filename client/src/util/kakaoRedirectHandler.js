@@ -1,18 +1,17 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 function KakaoRedirectHandler() {
     const navigate = useNavigate();
+
     useEffect(() => {
         const params = new URL(window.location.href).searchParams;
         const code = params.get("code"); // 인가코드 받는 부분
-        const inputFName = prompt("공장 입력");
 
         axios
             .post("/api/login/oauth/kakao", {
                 authorizationCode: code,
-                factoryName: inputFName,
             })
             .then((result) => {
                 if (result.data) {
@@ -22,7 +21,7 @@ function KakaoRedirectHandler() {
             .catch((e) => {
                 console.log(e);
             });
-    }, []);
+    });
 
     return (
         <div>
