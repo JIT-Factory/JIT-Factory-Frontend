@@ -1,5 +1,6 @@
 import * as React from "react";
 import "./dashboard/Dashboard.css";
+import axios from "axios";
 
 import { styled } from "@mui/material/styles";
 import MuiDrawer from "@mui/material/Drawer";
@@ -70,10 +71,36 @@ function HomeLayout() {
     const [role, setRole] = useState("");
 
     useEffect(() => {
-        const storedFactoryName = localStorage.getItem("factoryName");
+        let storedFactoryName = localStorage.getItem("factoryName");
         const storedToken = localStorage.getItem("token");
         if (storedToken) {
             const tokenData = jwt_decode(storedToken);
+
+            if (
+                tokenData.factoryName === "" ||
+                tokenData.factoryName === null
+            ) {
+                const userInput = window.prompt(
+                    "소속된 공장이 없습니다. 공장 이름을 입력해주세요."
+                );
+                if (userInput) {
+                    axios
+                        .post(
+                            `/api/login/oauth/factory?email=${tokenData.email}&factoryName=${userInput}`
+                        )
+                        .then(() => {
+                            alert("다시 로그인해주세요");
+                            localStorage.removeItem("token");
+                            localStorage.removeItem("factoryName");
+                            navigate("/login");
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                } else {
+                    console.log("사용자가 입력을 취소했습니다.");
+                }
+            }
             setFactory(storedFactoryName);
             setRole(tokenData.role.split("_")[1]);
             setUserName(tokenData.userName[0].name);

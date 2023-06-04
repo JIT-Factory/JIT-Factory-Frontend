@@ -21,7 +21,6 @@ function DashboardPage() {
 
     const handleChange = (event) => {
         setByDate(event.target.value);
-        console.log(byDate);
     };
 
     return (

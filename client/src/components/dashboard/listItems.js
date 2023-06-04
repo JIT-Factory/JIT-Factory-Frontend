@@ -17,7 +17,7 @@ import { ListSubheader } from "@mui/material";
 
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setFactory, setToken } from "../redux/authSlice";
+import { setFactory, setToken } from "../../redux/authSlice";
 
 import axios from "axios";
 
@@ -26,6 +26,10 @@ export default function LogoutListItems() {
     const navigate = useNavigate();
 
     const handleLogout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("factoryName");
+        window.location.replace("/login");
+
         axios
             .post("/api/auth/logout", null, {
                 headers: { Authorization: `${localStorage.getItem("token")}` },
@@ -33,7 +37,6 @@ export default function LogoutListItems() {
             .then(function (response) {
                 dispatch(setToken(""));
                 dispatch(setFactory(""));
-                console.log(response, "로그아웃 성공");
                 localStorage.removeItem("token");
                 localStorage.removeItem("factoryName");
                 navigate("/login");

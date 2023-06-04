@@ -3,7 +3,7 @@ import "./auth.css";
 
 import { useNavigate } from "react-router-dom";
 
-import { authSlice } from "../redux/authSlice";
+import { authSlice } from "../../redux/authSlice";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 
@@ -39,26 +39,6 @@ export default function LoginPage() {
         }
     }, []);
 
-    function handleKakaoLoginSuccess(url) {
-        // URL에서 authorizationCode 추출
-        const authorizationCode = url.split("=")[1];
-
-        // 로그인 API 호출
-        axios
-            .post("/api/login/oauth/kakao/", {
-                authorizationCode: authorizationCode,
-                factoryName: "CarFactory",
-            })
-            .then((response) => {
-                console.log(response);
-                // 로그인 성공 시 처리
-            })
-            .catch((error) => {
-                console.log(error);
-                // 로그인 실패 시 처리
-            });
-    }
-
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
@@ -85,8 +65,6 @@ export default function LoginPage() {
                 } else {
                     console.error("Authorization header not found in response");
                 }
-                console.log(response, "성공");
-                console.log(authorizationHeader);
                 navigate("/");
             })
             .catch(function (err) {
@@ -210,11 +188,6 @@ export default function LoginPage() {
                                 </Stack>
 
                                 <Grid container sx={{ paddingTop: "5px" }}>
-                                    {/* <Grid item xs>
-                                        <Link href="#" variant="body2">
-                                            Forgot password?
-                                        </Link>
-                                    </Grid> */}
                                     <Grid item xs>
                                         <Link href="/register" variant="body2">
                                             {"계정이 없으신가요? 회원가입"}
