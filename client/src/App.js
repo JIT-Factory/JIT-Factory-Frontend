@@ -12,6 +12,7 @@ import ProcessPage from "./components/process/ProcessPage";
 import ProductPage from "./components/product/ProductPage";
 import KakaoRedirectHandler from "./util/kakaoRedirectHandler";
 import NaverRedirectHandler from "./util/NaverRedirectHandler";
+import StreamPage from "./components/livestream/StreamPage";
 
 function App() {
     return (
@@ -23,7 +24,7 @@ function App() {
                 <Route path="/member" element={<Member />} />
                 <Route path="/defective" element={<DefectivePage />} />
                 <Route path="/sales" element={<SalesPage />} />
-                <Route path="/stream" element={<LiveStreamPage />} />
+                <Route path="/stream" element={<StreamPage />} />
                 <Route path="/process" element={<ProcessPage />} />
                 <Route path="/product" element={<ProductPage />} />
 

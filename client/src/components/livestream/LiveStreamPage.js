@@ -25,15 +25,12 @@ function LiveStreamPage() {
         <div
             style={{
                 verticalAlign: "center",
-                paddingTop: "5vmax",
-                width: "100vw",
-                height: "100vh",
-                background: "#222",
+                paddingTop: "2vmax",
             }}
         >
             <iframe
                 width="1280"
-                height="720"
+                height="640"
                 src="https://www.youtube.com/embed/VWyNjD5G95I"
                 frameborder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -46,35 +43,39 @@ function LiveStreamPage() {
                 onClick={() => {
                     setNumber(1);
                 }}
+                style={{ backgroundColor: "grey" }}
             >
-                1
+                camera 1
             </Button>
-            &nbsp;
+            &nbsp;&nbsp;
             <Button
                 variant="contained"
                 onClick={() => {
                     setNumber(2);
                 }}
+                style={{ backgroundColor: "grey" }}
             >
-                2
+                camera 2
             </Button>
-            &nbsp;
+            &nbsp;&nbsp;
             <Button
                 variant="contained"
                 onClick={() => {
                     setNumber(3);
                 }}
+                style={{ backgroundColor: "grey" }}
             >
-                3
+                camera 3
             </Button>
-            &nbsp;
+            &nbsp;&nbsp;
             <Button
                 variant="contained"
                 onClick={() => {
                     setNumber(4);
                 }}
+                style={{ backgroundColor: "grey" }}
             >
-                4
+                camera 4
             </Button>
         </div>
     );
