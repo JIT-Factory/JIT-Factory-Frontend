@@ -222,7 +222,7 @@ export function AdminListItems() {
                     }
                 />
             </ListItemButton>
-            <ListItemButton
+            {/* <ListItemButton
                 onClick={() => {
                     navigate("/material");
                 }}
@@ -244,7 +244,7 @@ export function AdminListItems() {
                         </Typography>
                     }
                 />
-            </ListItemButton>
+            </ListItemButton> */}
             <ListItemButton
                 onClick={() => {
                     navigate("/stream");

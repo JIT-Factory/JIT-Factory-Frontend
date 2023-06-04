@@ -65,6 +65,7 @@ const AppBar = styled(MuiAppBar, {
 function HomeLayout() {
     const navigate = useNavigate();
     const [factory, setFactory] = useState("");
+    const [userName, setUserName] = useState("");
     const [open] = useState(true);
     const [role, setRole] = useState("");
 
@@ -75,6 +76,7 @@ function HomeLayout() {
             const tokenData = jwt_decode(storedToken);
             setFactory(storedFactoryName);
             setRole(tokenData.role.split("_")[1]);
+            setUserName(tokenData.userName[0].name);
         } else {
             navigate("/login");
         }
@@ -97,7 +99,7 @@ function HomeLayout() {
                         px: [1],
                     }}
                 >
-                    <h3 style={{ margin: "auto" }}>Just-In-Time Factory</h3>
+                    <h3 style={{ margin: "auto" }}>{factory}</h3>
                 </Toolbar>
                 <br />
                 <br />
@@ -112,7 +114,7 @@ function HomeLayout() {
                 ) : (
                     void 0
                 )}
-                <p>{factory}</p>
+                <p>{userName}</p>
                 <Divider />
                 <List component="nav">
                     <UserListItems />

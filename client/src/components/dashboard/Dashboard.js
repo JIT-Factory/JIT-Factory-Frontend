@@ -48,7 +48,7 @@ function DashboardPage() {
                         style={{
                             width: "95%",
                             margin: "auto",
-                            paddingTop: "1vmax",
+                            paddingTop: "3vmax",
                         }}
                         sx={{ mt: 4, mb: 4 }}
                     >
@@ -59,6 +59,18 @@ function DashboardPage() {
                                 width: "100%",
                             }}
                         >
+                            <Grid item xs={12}>
+                                <Paper
+                                    sx={{
+                                        p: 2,
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        height: 300,
+                                    }}
+                                >
+                                    <div>상품 생산 % 들어갈 곳</div>
+                                </Paper>
+                            </Grid>
                             {/* Chart */}
                             <Grid item xs={12} md={8} lg={9}>
                                 <RadioGroup
@@ -110,18 +122,6 @@ function DashboardPage() {
                                     }}
                                 >
                                     <Deposits byDate={byDate} />
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Paper
-                                    sx={{
-                                        p: 2,
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        height: 550,
-                                    }}
-                                >
-                                    <Defective />
                                 </Paper>
                             </Grid>
                         </Grid>
