@@ -10,3 +10,14 @@
     height: 100vh;
     object-fit: cover;
 }
+
+.text{
+    text-align: left;
+}
+.text .in{
+    text-indent: 5%;
+}
+
+.tbText{
+    font-size: 1vmax;
+}

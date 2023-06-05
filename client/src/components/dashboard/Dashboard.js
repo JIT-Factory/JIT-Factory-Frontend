@@ -9,10 +9,10 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Chart from "./Chart";
 import Deposits from "./Deposits";
-import Defective from "./Defective";
 import { useState } from "react";
 
 import HomeLayout from "../HomeLayout";
+import Progress from "./Progress";
 
 const mdTheme = createTheme();
 
@@ -47,7 +47,7 @@ function DashboardPage() {
                         style={{
                             width: "95%",
                             margin: "auto",
-                            paddingTop: "3vmax",
+                            paddingTop: "1.5vmax",
                         }}
                         sx={{ mt: 4, mb: 4 }}
                     >
@@ -58,19 +58,6 @@ function DashboardPage() {
                                 width: "100%",
                             }}
                         >
-                            <Grid item xs={12}>
-                                <Paper
-                                    sx={{
-                                        p: 2,
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        height: 300,
-                                    }}
-                                >
-                                    <div>상품 생산 % 들어갈 곳</div>
-                                </Paper>
-                            </Grid>
-                            {/* Chart */}
                             <Grid item xs={12} md={8} lg={9}>
                                 <RadioGroup
                                     aria-labelledby="demo-controlled-radio-buttons-group"
@@ -121,6 +108,18 @@ function DashboardPage() {
                                     }}
                                 >
                                     <Deposits byDate={byDate} />
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} sx={{ paddingBottom: 3 }}>
+                                <Paper
+                                    sx={{
+                                        p: 2,
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        height: 500,
+                                    }}
+                                >
+                                    <Progress />
                                 </Paper>
                             </Grid>
                         </Grid>
