@@ -36,22 +36,18 @@ const getToday = () => {
 };
 
 function Progress() {
-    const token = localStorage.getItem("token");
     const factoryName = localStorage.getItem("factoryName");
     const [selectedProcess, setSelectedProcess] = useState("default");
     const [processStatus, setProcessStatus] = useState("");
-    const [orderList, setOrderList] = useState([]);
-    const [orderCount, setOrderCount] = useState(0);
     const [buttonDisabled, setButtonDisabled] = useState(false);
     const [productionCounts, setProductionCounts] = useState({});
-    const [targetCount, setTargetCount] = useState(0);
 
     // 프로세스 바 진행사항
     const [progress, setProgress] = useState(0);
     // progress Bar
     useEffect(() => {
         const timer = setInterval(() => {
-            const totalCount = Object.keys(productionCounts).length; // 200
+            const totalCount = Object.keys(productionCounts).length * 100; // 200
             const createCount = Object.values(productionCounts).reduce(
                 (sum, count) => sum + count,
                 0
@@ -60,9 +56,9 @@ function Progress() {
             console.log(totalCount);
 
             setProgress((prevProgress) =>
-                prevProgress >= 100 ? 0 : (1 / 2) * 100
+                prevProgress >= 100 ? 0 : (createCount / totalCount) * 100
             );
-        }, 5000);
+        }, 3000);
 
         return () => {
             clearInterval(timer);
