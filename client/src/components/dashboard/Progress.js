@@ -56,14 +56,14 @@ function Progress() {
             console.log(totalCount);
 
             setProgress((prevProgress) =>
-                prevProgress >= 100 ? 0 : (createCount / totalCount) * 100
+                prevProgress >= 1000 ? 0 : (createCount / totalCount) * 100
             );
-        }, 3000);
+        }, 1000);
 
         return () => {
             clearInterval(timer);
         };
-    }, []);
+    });
 
     // 전체 process, 해당 process 컨베이어 벨트의 작동 여부를 10초마다 조회
     useEffect(() => {
@@ -71,12 +71,12 @@ function Progress() {
         checkSuccessProduct();
 
         // 10초마다 progressBar 갱신
-        const intervalSetUp = setInterval(SetUp, 10000);
+        const intervalSetUp = setInterval(SetUp, 5000);
 
         // 10초마다 success 조회
         const intervalCheckSuccessProduct = setInterval(
             checkSuccessProduct,
-            10000
+            5000
         );
 
         return () => clearInterval(intervalSetUp, intervalCheckSuccessProduct);
