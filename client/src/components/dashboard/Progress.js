@@ -60,9 +60,9 @@ function Progress() {
             console.log(totalCount);
 
             setProgress((prevProgress) =>
-                prevProgress >= 100 ? 0 : (createCount / totalCount) * 100
+                prevProgress >= 100 ? 0 : (1 / 2) * 100
             );
-        }, 1000);
+        }, 5000);
 
         return () => {
             clearInterval(timer);
@@ -89,7 +89,7 @@ function Progress() {
     const SetUp = () => {
         axios
             .get(
-                `/api/process?factoryName=${factoryName}&processName=${selectedProcess}`
+                `/api/process/show/factory/process?factoryName=${factoryName}&processName=${selectedProcess}`
             )
             .then((response) => {
                 if (response.data) {
