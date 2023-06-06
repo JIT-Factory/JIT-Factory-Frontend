@@ -7,6 +7,7 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import HomeLayout from "../HomeLayout";
 import AddProduct from "./productFunction/AddProduct";
+import MaterialCheck from "./productFunction/MaterialCheck";
 
 const mdTheme = createTheme();
 
@@ -51,10 +52,22 @@ function ProductPage() {
                                             p: 2,
                                             display: "flex",
                                             flexDirection: "column",
-                                            height: 700,
+                                            height: 425,
                                         }}
                                     >
                                         <AddProduct />
+                                    </Paper>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Paper
+                                        sx={{
+                                            p: 2,
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            height: 425,
+                                        }}
+                                    >
+                                        <MaterialCheck />
                                     </Paper>
                                 </Grid>
                             </Grid>

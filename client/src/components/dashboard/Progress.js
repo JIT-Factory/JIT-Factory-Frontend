@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from "react";
-
 import Box from "@mui/material/Box";
 import axios from "axios";
-
 import { Grid } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
-
 import CircularProgress from "@mui/material/CircularProgress";
 import { Button, Stack } from "@mui/material";
-
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -17,23 +13,6 @@ import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-
-const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-}));
-
-const getToday = () => {
-    const currentDate = new Date();
-    const year = currentDate.getFullYear();
-    const month = String(currentDate.getMonth() + 1).padStart(2, "0");
-    const day = String(currentDate.getDate()).padStart(2, "0");
-    const createTime = `${year}-${month}-${day}`;
-    return createTime;
-};
 
 function Progress() {
     const factoryName = localStorage.getItem("factoryName");
@@ -298,6 +277,14 @@ function processHandler(factoryName, selectedProcess, status) {
     );
 }
 
+const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: "center",
+    color: theme.palette.text.secondary,
+}));
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
         backgroundColor: theme.palette.common.black,
@@ -317,3 +304,12 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
         border: 1,
     },
 }));
+
+const getToday = () => {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+    const day = String(currentDate.getDate()).padStart(2, "0");
+    const createTime = `${year}-${month}-${day}`;
+    return createTime;
+};

@@ -11,7 +11,6 @@ import { Button } from "@mui/material";
 function CustomFormControl(props) {
     return (
         <div style={{ display: "flex", justifyContent: "flex-start" }}>
-            &nbsp;&nbsp;
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
                 <InputLabel id="select-label">{props.choose}</InputLabel>
                 <Select
@@ -60,14 +59,14 @@ function AddProduct() {
     const handleOrderChange = (event) => {
         setSelectedOrder(event.target.value);
     };
+    const handleInputOrder = (event) => {
+        setInputOrder(event.target.value);
+    };
     const handleCountChange1 = (event) => {
         setSelectedCount1(event.target.value);
     };
     const handleCountChange2 = (event) => {
         setSelectedCount2(event.target.value);
-    };
-    const handleInputOrder = (event) => {
-        setInputOrder(event.target.value);
     };
 
     const clearHandler = () => {
@@ -116,6 +115,7 @@ function AddProduct() {
                                 token
                             );
                             buttonTimer();
+                            clearHandler();
                         }}
                         disabled={buttonDisabled}
                     >
@@ -135,14 +135,14 @@ function AddProduct() {
                     <Box
                         component="form"
                         sx={{
-                            "& > :not(style)": { m: 1, width: "15ch" },
+                            "& > :not(style)": { m: 1, width: "14ch" },
                         }}
                         noValidate
                         autoComplete="off"
                     >
                         <TextField
                             id="standard-basic"
-                            label="추가할 상품입력"
+                            label="상품 이름"
                             variant="standard"
                             value={inputOrder}
                             onChange={handleInputOrder}
