@@ -1,5 +1,4 @@
 import { Fragment, useState, useEffect } from "react";
-import { useSelector } from "react-redux";
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 
@@ -14,7 +13,7 @@ function SalesSection({ title, salesSum, salesDate }) {
                 <br />
                 <br />
                 <Typography component="p" variant="h4">
-                    {salesSum || 0}원
+                    {salesSum.toLocaleString() || 0}원
                 </Typography>
                 <br />
                 <Typography color="text.secondary" sx={{ flex: 1 }}>
