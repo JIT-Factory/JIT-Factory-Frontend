@@ -10,7 +10,7 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import ErrorIcon from "@mui/icons-material/Error";
 import LogoutIcon from "@mui/icons-material/Logout";
 import InventoryIcon from "@mui/icons-material/Inventory";
-import FireTruckIcon from "@mui/icons-material/FireTruck";
+import TocIcon from "@mui/icons-material/Toc";
 import MemoryIcon from "@mui/icons-material/Memory";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import { ListSubheader } from "@mui/material";
@@ -22,210 +22,236 @@ import { setFactory, setToken } from "../../redux/authSlice";
 import axios from "axios";
 
 export default function LogoutListItems() {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    const handleLogout = () => {
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("factoryName");
+    window.location.replace("/login");
+
+    axios
+      .post("/api/auth/logout", null, {
+        headers: { Authorization: `${localStorage.getItem("token")}` },
+      })
+      .then(function (response) {
+        dispatch(setToken(""));
+        dispatch(setFactory(""));
         localStorage.removeItem("token");
         localStorage.removeItem("factoryName");
-        window.location.replace("/login");
+        navigate("/login");
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
+  };
 
-        axios
-            .post("/api/auth/logout", null, {
-                headers: { Authorization: `${localStorage.getItem("token")}` },
-            })
-            .then(function (response) {
-                dispatch(setToken(""));
-                dispatch(setFactory(""));
-                localStorage.removeItem("token");
-                localStorage.removeItem("factoryName");
-                navigate("/login");
-            })
-            .catch(function (err) {
-                console.log(err);
-            });
-    };
-
-    return (
-        <ListItemButton onClick={handleLogout}>
-            <ListItemIcon>
-                <LogoutIcon sx={{ color: "#000" }} fontSize="large" />
-            </ListItemIcon>
-            <ListItemText
-                disableTypography
-                primary={
-                    <Typography
-                        style={{
-                            color: "black",
-                            fontSize: "0.9vmax",
-                            fontWeight: "600",
-                        }}
-                    >
-                        LOGOUT
-                    </Typography>
-                }
-            />
-        </ListItemButton>
-    );
+  return (
+    <ListItemButton onClick={handleLogout}>
+      <ListItemIcon>
+        <LogoutIcon sx={{ color: "#000" }} fontSize="large" />
+      </ListItemIcon>
+      <ListItemText
+        disableTypography
+        primary={
+          <Typography
+            style={{
+              color: "black",
+              fontSize: "0.9vmax",
+              fontWeight: "600",
+            }}
+          >
+            LOGOUT
+          </Typography>
+        }
+      />
+    </ListItemButton>
+  );
 }
 
 export function UserListItems() {
-    const navigate = useNavigate();
-    return (
-        <React.Fragment>
-            <ListSubheader component="div" style={{ textAlign: "left" }}>
-                일반 사용자
-            </ListSubheader>
-            <ListItemButton
-                onClick={() => {
-                    navigate("/");
-                }}
+  const navigate = useNavigate();
+  return (
+    <React.Fragment>
+      <ListSubheader component="div" style={{ textAlign: "left" }}>
+        일반 사용자
+      </ListSubheader>
+      <ListItemButton
+        onClick={() => {
+          navigate("/");
+        }}
+      >
+        <ListItemIcon>
+          <HomeIcon sx={{ color: "#000" }} fontSize="large" />
+        </ListItemIcon>
+        <ListItemText
+          disableTypography
+          primary={
+            <Typography
+              style={{
+                color: "black",
+                fontSize: "0.9vmax",
+                fontWeight: "600",
+              }}
             >
-                <ListItemIcon>
-                    <HomeIcon sx={{ color: "#000" }} fontSize="large" />
-                </ListItemIcon>
-                <ListItemText
-                    disableTypography
-                    primary={
-                        <Typography
-                            style={{
-                                color: "black",
-                                fontSize: "0.9vmax",
-                                fontWeight: "600",
-                            }}
-                        >
-                            HOME
-                        </Typography>
-                    }
-                />
-            </ListItemButton>
-            <ListItemButton
-                onClick={() => {
-                    navigate("/sales");
-                }}
+              HOME
+            </Typography>
+          }
+        />
+      </ListItemButton>
+
+      <ListItemButton
+        onClick={() => {
+          navigate("/order");
+        }}
+      >
+        <ListItemIcon>
+          <InventoryIcon sx={{ color: "#000" }} fontSize="large" />
+        </ListItemIcon>
+        <ListItemText
+          disableTypography
+          primary={
+            <Typography
+              style={{
+                color: "black",
+                fontSize: "0.9vmax",
+                fontWeight: "600",
+              }}
             >
-                <ListItemIcon>
-                    <AttachMoneyIcon sx={{ color: "#000" }} fontSize="large" />
-                </ListItemIcon>
-                <ListItemText
-                    disableTypography
-                    primary={
-                        <Typography
-                            style={{
-                                color: "black",
-                                fontSize: "0.9vmax",
-                                fontWeight: "600",
-                            }}
-                        >
-                            SALES
-                        </Typography>
-                    }
-                />
-            </ListItemButton>
-            <ListItemButton
-                onClick={() => {
-                    navigate("/defective");
-                }}
+              ORDER
+            </Typography>
+          }
+        />
+      </ListItemButton>
+
+      <ListItemButton
+        onClick={() => {
+          navigate("/defective");
+        }}
+      >
+        <ListItemIcon>
+          <ErrorIcon sx={{ color: "#000" }} fontSize="large" />
+        </ListItemIcon>
+        <ListItemText
+          disableTypography
+          primary={
+            <Typography
+              style={{
+                color: "black",
+                fontSize: "0.9vmax",
+                fontWeight: "600",
+              }}
             >
-                <ListItemIcon>
-                    <ErrorIcon sx={{ color: "#000" }} fontSize="large" />
-                </ListItemIcon>
-                <ListItemText
-                    disableTypography
-                    primary={
-                        <Typography
-                            style={{
-                                color: "black",
-                                fontSize: "0.9vmax",
-                                fontWeight: "600",
-                            }}
-                        >
-                            DEFECTIVE
-                        </Typography>
-                    }
-                />
-            </ListItemButton>
-            <ListItemButton
-                onClick={() => {
-                    navigate("/product");
-                }}
+              DEFECTIVE
+            </Typography>
+          }
+        />
+      </ListItemButton>
+      <ListItemButton
+        onClick={() => {
+          navigate("/sales");
+        }}
+      >
+        <ListItemIcon>
+          <AttachMoneyIcon sx={{ color: "#000" }} fontSize="large" />
+        </ListItemIcon>
+        <ListItemText
+          disableTypography
+          primary={
+            <Typography
+              style={{
+                color: "black",
+                fontSize: "0.9vmax",
+                fontWeight: "600",
+              }}
             >
-                <ListItemIcon>
-                    <InventoryIcon sx={{ color: "#000" }} fontSize="large" />
-                </ListItemIcon>
-                <ListItemText
-                    disableTypography
-                    primary={
-                        <Typography
-                            style={{
-                                color: "black",
-                                fontSize: "0.9vmax",
-                                fontWeight: "600",
-                            }}
-                        >
-                            PRODUCT
-                        </Typography>
-                    }
-                />
-            </ListItemButton>
-        </React.Fragment>
-    );
+              SALES
+            </Typography>
+          }
+        />
+      </ListItemButton>
+
+      <ListItemButton
+        onClick={() => {
+          navigate("/product");
+        }}
+      >
+        <ListItemIcon>
+          <TocIcon sx={{ color: "#000" }} fontSize="large" />
+        </ListItemIcon>
+        <ListItemText
+          disableTypography
+          primary={
+            <Typography
+              style={{
+                color: "black",
+                fontSize: "0.9vmax",
+                fontWeight: "600",
+              }}
+            >
+              PRODUCT
+            </Typography>
+          }
+        />
+      </ListItemButton>
+    </React.Fragment>
+  );
 }
 
 export function AdminListItems() {
-    const navigate = useNavigate();
-    return (
-        <React.Fragment>
-            <ListSubheader component="div" style={{ textAlign: "left" }}>
-                관리자
-            </ListSubheader>
-            <ListItemButton
-                onClick={() => {
-                    navigate("/member");
-                }}
+  const navigate = useNavigate();
+  return (
+    <React.Fragment>
+      <ListSubheader component="div" style={{ textAlign: "left" }}>
+        관리자
+      </ListSubheader>
+      <ListItemButton
+        onClick={() => {
+          navigate("/member");
+        }}
+      >
+        <ListItemIcon>
+          <GroupsIcon sx={{ color: "#000" }} fontSize="large" />
+        </ListItemIcon>
+        <ListItemText
+          disableTypography
+          primary={
+            <Typography
+              style={{
+                color: "black",
+                fontSize: "0.9vmax",
+                fontWeight: "600",
+              }}
             >
-                <ListItemIcon>
-                    <GroupsIcon sx={{ color: "#000" }} fontSize="large" />
-                </ListItemIcon>
-                <ListItemText
-                    disableTypography
-                    primary={
-                        <Typography
-                            style={{
-                                color: "black",
-                                fontSize: "0.9vmax",
-                                fontWeight: "600",
-                            }}
-                        >
-                            MEMBER
-                        </Typography>
-                    }
-                />
-            </ListItemButton>
-            <ListItemButton
-                onClick={() => {
-                    navigate("/process");
-                }}
+              MEMBER
+            </Typography>
+          }
+        />
+      </ListItemButton>
+      <ListItemButton
+        onClick={() => {
+          navigate("/process");
+        }}
+      >
+        <ListItemIcon>
+          <MemoryIcon sx={{ color: "#000" }} fontSize="large" />
+        </ListItemIcon>
+        <ListItemText
+          disableTypography
+          primary={
+            <Typography
+              style={{
+                color: "black",
+                fontSize: "0.9vmax",
+                fontWeight: "600",
+              }}
             >
-                <ListItemIcon>
-                    <MemoryIcon sx={{ color: "#000" }} fontSize="large" />
-                </ListItemIcon>
-                <ListItemText
-                    disableTypography
-                    primary={
-                        <Typography
-                            style={{
-                                color: "black",
-                                fontSize: "0.9vmax",
-                                fontWeight: "600",
-                            }}
-                        >
-                            PROCESS
-                        </Typography>
-                    }
-                />
-            </ListItemButton>
-            {/* <ListItemButton
+              PROCESS
+            </Typography>
+          }
+        />
+      </ListItemButton>
+      {/* <ListItemButton
                 onClick={() => {
                     navigate("/material");
                 }}
@@ -248,29 +274,29 @@ export function AdminListItems() {
                     }
                 />
             </ListItemButton> */}
-            <ListItemButton
-                onClick={() => {
-                    navigate("/stream");
-                }}
+      <ListItemButton
+        onClick={() => {
+          navigate("/stream");
+        }}
+      >
+        <ListItemIcon>
+          <YouTubeIcon sx={{ color: "#000" }} fontSize="large" />
+        </ListItemIcon>
+        <ListItemText
+          disableTypography
+          primary={
+            <Typography
+              style={{
+                color: "black",
+                fontSize: "0.9vmax",
+                fontWeight: "600",
+              }}
             >
-                <ListItemIcon>
-                    <YouTubeIcon sx={{ color: "#000" }} fontSize="large" />
-                </ListItemIcon>
-                <ListItemText
-                    disableTypography
-                    primary={
-                        <Typography
-                            style={{
-                                color: "black",
-                                fontSize: "0.9vmax",
-                                fontWeight: "600",
-                            }}
-                        >
-                            STREAM
-                        </Typography>
-                    }
-                />
-            </ListItemButton>
-        </React.Fragment>
-    );
+              STREAM
+            </Typography>
+          }
+        />
+      </ListItemButton>
+    </React.Fragment>
+  );
 }

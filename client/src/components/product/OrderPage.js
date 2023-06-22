@@ -6,11 +6,12 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import HomeLayout from "../HomeLayout";
-import ProductTable from "./productTable/ProductTable";
+import AddProduct from "./productFunction/AddProduct";
+import MaterialCheck from "./productFunction/MaterialCheck";
 
 const mdTheme = createTheme();
 
-function ProductPage() {
+function OrderPage() {
   return (
     <div>
       <ThemeProvider theme={mdTheme}>
@@ -51,10 +52,22 @@ function ProductPage() {
                       p: 2,
                       display: "flex",
                       flexDirection: "column",
-                      height: 760,
+                      height: 425,
                     }}
                   >
-                    <ProductTable />
+                    <AddProduct />
+                  </Paper>
+                </Grid>
+                <Grid item xs={12}>
+                  <Paper
+                    sx={{
+                      p: 2,
+                      display: "flex",
+                      flexDirection: "column",
+                      height: 425,
+                    }}
+                  >
+                    <MaterialCheck />
                   </Paper>
                 </Grid>
               </Grid>
@@ -66,4 +79,4 @@ function ProductPage() {
   );
 }
 
-export default ProductPage;
+export default OrderPage;

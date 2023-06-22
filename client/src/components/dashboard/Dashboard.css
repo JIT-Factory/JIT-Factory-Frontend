@@ -1,23 +1,23 @@
-.box{
-    align-self: center;
-    width: 8vmax;
-    height: 8vmax; 
-    border-radius: 40%;
-    overflow: hidden;
+.box {
+  align-self: center;
+  width: 8vmax;
+  height: 8vmax;
+  border-radius: 40%;
+  overflow: hidden;
 }
-.profile{
-    width: 100vh;
-    height: 100vh;
-    object-fit: cover;
-}
-
-.text{
-    text-align: left;
-}
-.text .in{
-    text-indent: 5%;
+.profile {
+  width: 100vh;
+  height: 100vh;
+  object-fit: cover;
 }
 
-.tbText{
-    font-size: 1vmax;
+.text {
+  text-align: left;
+}
+.text .in {
+  text-indent: 5%;
+}
+
+.tbText {
+  font-size: 0.9vmax;
 }
